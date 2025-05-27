@@ -1,0 +1,83 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow-y: scroll;
+    }
+    header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background-color: #262727;
+    }
+    header h1 {
+      font-size: 24px;
+    }
+    .search-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+    
+    #search-bar {
+      width: 200px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }    
+    
+    .carousel {
+      display: flex;
+      justify-content: center;
+      margin: 30px auto;
+      width: 80%;
+      overflow: hidden;
+      height: 300px;
+    }
+    .carousel img {
+      width: 200px;
+      height: 300px;
+      margin: 0 10px;
+      transition: opacity 1s ease-in-out;
+    }
+    .section-title {
+      margin: 20px;
+      font-size: 20px;
+    }
+    .film-row {
+      display: flex;
+      justify-content: center;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 10px 0;
+    }
+    .film-card {
+      width: 150px;
+      height: 225px;
+      background-color: #222;
+      margin: 10px;
+      border-radius: 10px;
+    }
+    .film-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+}
+    .scroll-bar {
+      position: fixed;
+      right: 0;
+      top: 0;
+      width: 10px;
+      height: 100vh;
+      background-color: #555;
+    }
+
