@@ -34,6 +34,32 @@ voltarLink.href =
   `&valor=${encodeURIComponent(valorCompra)}`;
 };
 
+async function buscarLinkDoCSV(imagem) {
+  try {
+    const response = await fetch('../InfoFilmes.csv');
+    const data = await response.text();
+    const linhas = data.trim().split('\n');
+
+    for (let i = 1; i < linhas.length; i++) { // pula cabeçalho
+      const linha = linhas[i].trim();
+      if (linha) {
+        // separa respeitando vírgulas dentro de aspas
+        const partes = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+        const imgCSV = partes[4].replace(/^"|"$/g, '').trim();
+        const linkCSV = partes[5].replace(/^"|"$/g, '').trim();
+
+        if (imgCSV === imagem) {
+          return linkCSV;
+        }
+      }
+    }
+    return null; // se não encontrar
+  } catch (error) {
+    console.error('Erro ao carregar CSV:', error);
+    return null;
+  }
+}
+
 function finalizarCompra() {
   const numero = document.getElementById("numero").value.trim();
   const nome = document.getElementById("nome").value.trim();
@@ -74,39 +100,12 @@ const linkAssistir = document.getElementById("link-assistir");
  const imagemFilme = obterParametro("img");
 console.log("Imagem do filme:", imagemFilme);
 
-// Objeto com as imagens e links
-const links = {
-  //top 7
-"EstouAqui.jpg": "https://youtu.be/_NzqP0jmk3o",
-"AutoDaC2.jpg": "https://youtu.be/ke4x5ywVhiw",
-"sonic3.jpg": "https://youtu.be/xjbxG5VEo4M",
-"MINECRAFTimagem.webp": "https://youtu.be/EVKYAAES6JQ",
-"flow.jpg": "https://youtu.be/82WW9dVbglI",
-"furisosOne.webp": "https://youtu.be/g5_iHh2owEc",
-"furiososSeven.webp": "https://youtu.be/hujU0dw6Erk",
-//linha 1
-"UmSonhoDeLiberdade.webp": "https://youtu.be/Y22NgkErOAk",
-"AutoDaC1.jpg": "https://youtu.be/XPuMu_ENzlg",
-"Jurassic1.jpg": "https://youtu.be/RFinNxS5KN4",
-"Jurassic2.jpg": "https://youtu.be/u2WuN96DSkY",
-"Jurassic3.jpg": "https://youtu.be/zC8Vc8rMOdk",
-"furiososFive.jpg": "https://youtu.be/e4tEwEZYELc",
-"DoPijamaListrado.jpg": "https://youtu.be/aqwTw9qX1k4",
-//linha 2
-"farofeiros1.jpg": "https://youtu.be/MM-VGhfzNYQ",
-"farofeiros2.jng": "https://youtu.be/LZNW4vrK-7c",
-"MMEUmaPeça1.jpg": "https://youtu.be/mCbnq53iK3U",
-"MMEUmaPeça2.jpg": "https://youtu.be/9hyLbCV0Dxo",
-"MMEUmaPeça3.jpg": "https://youtu.be/8z9UHTvAwJY",
-"jumanji1.jpg": "https://youtu.be/tnpV3q8Q3gg",
-"Jumanji2.jpg": "https://youtu.be/PEuMN4_lnPs",
-
-
-};
-
-// Pega o link do filme ou um genérico se não encontrar
-const linkDoFilme = links[imagemFilme] || "https://www.youtube.com";
-
-linkAssistir.href = linkDoFilme;
-linkFilmeDiv.style.display = "block";
+buscarLinkDoCSV(imagemFilme).then(linkDoFilme => {
+  if (linkDoFilme) {
+    linkAssistir.href = linkDoFilme;
+  } else {
+    linkAssistir.href = "https://www.youtube.com";
+  }
+  linkFilmeDiv.style.display = "block";
+});
 }
