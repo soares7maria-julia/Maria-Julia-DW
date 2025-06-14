@@ -26,7 +26,7 @@ const duracao = obterParametro("duracao");
 const img = obterParametro("img");
 
 voltarLink.href =
-  `../tela2/tela2.html?titulo=${encodeURIComponent(titulo)}` +
+  `../2TelaInfoFilme/tela2.html?titulo=${encodeURIComponent(titulo)}` +
   `&ano=${encodeURIComponent(ano)}` +
   `&genero=${encodeURIComponent(genero)}` +
   `&duracao=${encodeURIComponent(duracao)}` +

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Locadora de Filmes</title>
+  <link rel="stylesheet" href="tela1.css" />
+</head>
+<body>
+  <header>
+  <div class="header-container">
+    <div class="header-left">
+      <h1>Locadora de Filmes</h1>
+    </div>
+
+    <div class="header-center">
+  <div class="searchbox">
+    <span class="search-icon">🔍</span>
+    <input type="search" id="search-bar" placeholder="Buscar filmes..." autocomplete="off" />
+    <span class="clear-icon" onclick="clearSearch()">✖</span>
+  </div>
+</div>
+
+    <div class="header-right">
+      <div class="login-circle" id="login-circle">
+        <img src="../img/login1.jpg" alt="Login">
+        <span>Login</span>
+      </div>
+    </div>
+</header>
+
+
+ <div id="single-carousel" class="single-carousel">
+    <img src="../img/AindaEstouAquiFormaPaisagem.jpg" alt="Ainda estou aqui"/>
+    <img src="../img/sonic3FormaPaisagem.webp" alt="Sonic 3"/>
+    <img src="../img/AutoDaC2FormaPaisagem.jpg" alt="O Auto Da Compadecida 2" />
+  </div>
+
+  <div class="section-title">EM DESTAQUE - TOP 7</div>
+  <div class="film-row" id="em-destaque"></div>
+
+  <!-- TODOS OS FILMES -->
+  <div class="section-title">FILMES</div>
+  <div class="film-row" id="filmes"></div>
+  <div class="scroll-bar"></div>
+
+  <footer class="rodape">
+  <p>Contato para reclamaçoes e sugestoes <br><br>
+    Email: <span class="email-destaque">locadorafilmes@gmail.com</span>
+  </p>
+</footer>
+
+
+  <script src="tela1.js"></script>
+</body>
+</html>

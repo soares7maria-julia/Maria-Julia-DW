@@ -1,0 +1,139 @@
+* {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-container {
+      background: #333;
+      padding: 70px 60px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      width: 600px; /* um pouco maior que o padrão */
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      color: #ffffff;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    label {
+      font-weight: 600;
+      color: #ffffff;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input[type="email"],
+    input[type="password"],
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.8px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="text"]:focus {
+      border-color: #5b61b7;
+      outline: none;
+    }
+
+    .password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-container input {
+      padding-right: 45px;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 12px;
+      background: none;
+      border: none;
+      color: #888;
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.3s;
+    }
+
+    .toggle-password:hover {
+      color: #5b61b7;
+    }
+
+    .buttons-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      margin-top: 35px;
+    }
+
+    .left-section {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      font-size: 1rem;
+      color: #ffffff;
+    }
+
+    .left-section p {
+      margin: 0 0 2px 0;
+    }
+
+    button {
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+      user-select: none;
+    }
+
+    .btn-cadastrar {
+      background-color: transparent;
+      color: #5b61b7;
+      border: 2px solid #5b61b7;
+    }
+
+    .btn-cadastrar:hover {
+      background-color: #5b61b7;
+      color: white;
+    }
+
+    .btn-entrar {
+      background-color: #5b61b7;
+      color: rgb(255, 255, 255);  
+      flex: 1;
+    }
+
+    .btn-entrar:hover {
+      background-color: #4a50a0;
+    }
+

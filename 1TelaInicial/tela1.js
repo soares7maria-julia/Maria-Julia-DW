@@ -1,14 +1,21 @@
 
-const carousel = document.getElementById('carousel');
-let currentIndex = 0;
+const carouselElement = document.getElementById('single-carousel');
+const imagens = carouselElement.querySelectorAll('img');
+let index = 0;
+
+function mostrarImagem(i) {
+  imagens.forEach((img, idx) => {
+    img.classList.toggle('active', idx === i);
+  });
+}
+
+mostrarImagem(index);
 
 setInterval(() => {
-  const imgs = carousel.querySelectorAll('img');
-  imgs.forEach((img, index) => {
-    img.style.opacity = index === currentIndex ? '1' : '0';
-  });
-  currentIndex = (currentIndex + 1) % imgs.length;
+  index = (index + 1) % imagens.length;
+  mostrarImagem(index);
 }, 3000);
+
 
 function carregarCSV(url) {
   return fetch(url)
@@ -28,11 +35,10 @@ function carregarCSV(url) {
 
 
 function criarCard(filme) {
-  const link = `../tela2/tela2.html?titulo=${encodeURIComponent(filme.titulo)}
+  const link = `../2TelaInfoFilme/tela2.html?titulo=${encodeURIComponent(filme.titulo)}
   &ano=${filme.ano}&genero=${encodeURIComponent(filme.genero)
   }&duracao=${encodeURIComponent(filme.duracao)}
   &img=${filme.img}&link=${encodeURIComponent(filme.link)}`;
-
 
   const card = document.createElement('div');
   card.className = 'film-card';
@@ -47,8 +53,18 @@ function criarCard(filme) {
   a.appendChild(img);
   card.appendChild(a);
 
+  // 👇 Adiciona título e gênero (ou outras infos) no card
+  const titulo = document.createElement('h3');
+  titulo.textContent = filme.titulo;
+  card.appendChild(titulo);
+
+  const genero = document.createElement('p');
+  genero.textContent = filme.genero;
+  card.appendChild(genero);
+
   return card;
 }
+
 
 function exibirFilmes(dados) {
   const destaqueContainer = document.getElementById('em-destaque');
@@ -83,6 +99,13 @@ searchInput.addEventListener('input', () => {
       card.style.display = 'none';
     }
   });
+});
+
+// --- CLIQUE NA IMAGEM DE LOGIN ---
+const loginCircle = document.getElementById('login-circle');
+
+loginCircle.addEventListener('click', () => {
+  window.location.href = '../4TelaLogin/login.html'; 
 });
 
 // --- INICIAR ---

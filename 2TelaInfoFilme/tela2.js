@@ -14,9 +14,9 @@ document.getElementById("imagem-filme").src = `../img/${img}`;
 const queryString = `?titulo=${encodeURIComponent(titulo)}&ano=${encodeURIComponent(ano)}&genero=${encodeURIComponent(genero)}&duracao=${encodeURIComponent(duracao)}&img=${encodeURIComponent(img)}`;
 
 document.getElementById("comprar-btn").addEventListener("click", () => {
-  window.location.href = `../tela3/tela3.html${queryString}&valor=10.00`;
+  window.location.href = `../3TelaPagamento/tela3.html${queryString}&valor=10.00`;
 });
 
 document.getElementById("alugar-btn").addEventListener("click", () => {
-  window.location.href = `../tela3/tela3.html${queryString}&valor=4.00`;
+  window.location.href = `../3TelaPagamento/tela3.html${queryString}&valor=4.00`;
 });
