@@ -121,7 +121,7 @@
     }
 
     .btn-login {
-      background-color: transparent;
+       background-color: transparent;
       color: #5b61b7;
       border: 2px solid #5b61b7;
     }
@@ -130,6 +130,7 @@
       background-color: #5b61b7;
       color: white;
     }
+
 
     .btn-cadastrar {
       background-color: #5b61b7;
@@ -142,7 +143,7 @@
     }
 
     .error-message {
-      color: #ff6b6b;
+      color: #343434;
       font-size: 0.9rem;
       margin-top: 5px;
       display: none;

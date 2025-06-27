@@ -196,7 +196,28 @@ header {
 .email-destaque {
   font-weight: bold;
   color: #5b61b7; 
-  text-decoration: underline;
+  text-decoration: underline;}
+
+ .botao-abaixo-header {
+  display: flex;
+  justify-content: flex-end;
+  background-color: #080808; 
+  margin-top: 0;     
+  padding: 10px 35px 10px 0;
 }
 
+.botao-adicionar {
+  background-color: #5b61b7;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
 
+.botao-adicionar:hover {
+  background-color: #4046a1;
+}

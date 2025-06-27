@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Adicionar Filme</title>
+  <link rel="stylesheet" href="adicionarF.css">
+</head>
+<body>
+  <div id="successMessage" class="success-message">
+    Filme adicionado com sucesso!
+  </div>
+  
+  <div id="errorMessage" class="error-message">
+    Erro ao adicionar filme. Tente novamente.
+  </div>
+
+  <h1 class="titulo">ADICIONAR FILME</h1>
+  
+  <form id="formFilme">
+    <div class="form-content">
+      <div class="inputs-left">
+        <div class="input-group">
+          <label for="titulo">Título</label>
+          <input type="text" id="titulo" required placeholder="Digite o título do filme">
+        </div>
+        
+        <div class="input-group">
+          <label for="genero">Gênero</label>
+          <input type="text" id="genero" required placeholder="Ex: Ação, Comédia, Drama">
+        </div>
+        
+        <div class="input-group">
+          <label for="duracao">Duração</label>
+          <input type="text" id="duracao" required placeholder="Ex: 1h 45m" pattern="[0-9]{1,2}h\s[0-9]{1,2}m">
+        </div>
+        
+        <div class="input-group">
+          <label for="capa">Capa do Filme</label>
+          <div class="file-upload-container">
+            <input type="file" id="capa" accept="image/*" required>
+            <div class="file-preview" id="filePreview">
+              <div class="preview-placeholder">
+                <span>📁</span>
+                <p>Clique para selecionar uma imagem</p>
+                <small>Formatos aceitos: JPG, PNG, GIF</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <label for="ano">Ano de lançamento</label>
+          <input type="number" id="ano" required placeholder="Ex: 2009" min="1900" max="2030">
+        </div>
+        
+
+                <div class="input-group">
+          <label for="categoria">Categoria</label>
+          <select id="categoria" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="filmes">FILMES</option>
+            <option value="top">EM DESTAQUE</option>
+          </select>
+        </div>
+        
+        <div class="input-group">
+          <label for="linkFilme">Link do Filme</label>
+          <input type="url" id="linkFilme" placeholder="https://exemplo.com/filme">
+        </div>
+
+
+        <div class="input-group">
+          <label for="categoria">Categoria</label>
+          <select id="categoria" required>
+            <option value="" disabled selected>Selecione</option>
+            <option value="filmes">FILMES</option>
+            <option value="top">EM DESTAQUE</option>
+          </select>
+        </div>
+      </div>
+    </div>
+      
+    <div class="buttons-row">
+      <button type="button" class="btn-voltar" onclick="voltarPagina()">VOLTAR</button>
+      <button type="submit" class="btn-adicionar">ADICIONAR</button>
+    </div>
+  </form>
+  <script src="adicionarF.js"></script>
+</body>
+</html>
+
