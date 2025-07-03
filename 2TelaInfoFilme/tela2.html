@@ -17,15 +17,29 @@
     </div>
   </div>
 
-  <div class="botoes">
+  <!-- SUBSTITUA A DIV .botoes ORIGINAL POR ESTA NOVA ESTRUTURA -->
+<div class="botoes">
+    <!-- Opção de Compra -->
     <div>
-      <button id="comprar-btn">COMPRAR - R$10,00</button>
+        <button id="comprar-btn" class="botao-opcao" data-tipo="compra" data-valor="10.00">
+            COMPRAR - R$10,00
+        </button>
     </div>
+    <!-- Opção de Aluguel -->
     <div>
-      <button id="alugar-btn">ALUGAR - R$4,00</button>
-      <small>Alugar o filme te dará acesso a ele por 15 dias.</small>
+        <button id="alugar-btn" class="botao-opcao" data-tipo="aluguel" data-valor="4.00">
+            ALUGAR - R$4,00
+        </button>
+        <small>Alugar o filme te dará acesso a ele por 15 dias.</small>
     </div>
-  </div>
+</div>
+
+<!-- NOVA SEÇÃO QUE APARECERÁ APÓS A ESCOLHA -->
+<div id="secao-adicionar" class="secao-adicionar" style="display: none;">
+    <p id="texto-confirmacao"></p>
+    <button id="adicionar-carrinho-btn">Adicionar ao Carrinho</button>
+   <a href="../1TelaInicial/tela1.html?mostrarCarrinho=true" class="botao-ir-carrinho">Ir para o Carrinho</a>
+</div>
 
   <div class="pagamento">
     <h3>Cartões aceitos:</h3>

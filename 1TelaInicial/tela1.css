@@ -1,8 +1,9 @@
+/* ESTILOS GERAIS E HEADER */
 body {
-    font-family: Arial, sans-serif;
-  
-    background-color: #1c1c1c;
-    color: #ffffff;
+  font-family: Arial, sans-serif;
+  background-color: #1c1c1c;
+  color: #ffffff;
+  position: relative; /* Necessário para o posicionamento absoluto funcionar bem */
 }
 
 header {
@@ -26,7 +27,6 @@ header {
      1px  1px 0 #5b61b7;
 }
 
-
 .header-center {
   display: flex;
   align-items: center;
@@ -42,7 +42,7 @@ header {
 .searchbox input[type="search"] {
   width: 100%;
   height: 40px;
-  padding: 0 48px 0 16px; /* aumenta o espaço à direita */
+  padding: 0 48px 0 16px;
   border: 1.5px solid #5b61b7;
   border-radius: 24px;
   background-color: #bcbfbf;
@@ -74,8 +74,6 @@ header {
   display: block;
 }
 
-
-
 .header-right .login-circle {
   display: flex;
   flex-direction: column;
@@ -95,8 +93,71 @@ header {
   color: white;
   margin-top: 5px;
 }
- 
-  .single-carousel {
+
+/* --- POSICIONAMENTO DOS BOTÕES ABAIXO DO HEADER --- */
+
+/* Contêiner para o botão "Área Restrita" no canto esquerdo */
+.canto-superior-esquerdo {
+  position: absolute;
+  top: 105px;  /* Distância do topo (ajuste se o header for maior/menor) */
+  left: 35px; /* Distância da esquerda */
+  z-index: 10;
+}
+
+/* Contêiner para o "Carrinho" no canto direito */
+.canto-superior-direito {
+  position: absolute;
+  top:115px;   /* Mesma distância do topo para alinhar */
+  right: 35px; /* Distância da direita */
+  z-index: 10;
+}
+
+/* Estilo para o botão "Área Restrita" */
+.botao-adicionar {
+  background-color: #5b61b7;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: block;
+}
+
+.botao-adicionar:hover {
+  background-color: #5b61b7;
+}
+
+/* Estilos para o carrinho */
+.carrinho-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.carrinho-icone {
+  font-size: 40px; /* Controla o tamanho do emoji */
+  line-height: 1;  /* Melhora o alinhamento vertical */
+}
+
+
+.carrinho-contador {
+  position: absolute;
+  top: -9px;
+  right: -5px;
+  background-color: #5b61b7; /* Cor vermelha para bom destaque */
+  color: white;
+  border-radius: 40%;
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 2px solid white;
+}
+
+/* --- CARROSSEL E SEÇÕES DE FILMES --- */
+
+.single-carousel {
   width: 65%;
   height: 300px;
   margin: 30px auto;
@@ -122,22 +183,18 @@ header {
 .single-carousel img.active {
   opacity: 1;
   pointer-events: auto;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
 }
 
-
-    .section-title {
-     font-size: 20px;
+.section-title {
+  font-size: 20px;
   color: white;
-  text-shadow:
-     2px  1px 0 #5b61b7;
+  text-shadow: 2px 1px 0 #5b61b7;
+  /* Adicionado um espaçamento para não colar nos botões */
+  margin-top: 80px; 
+   padding-left: 20px;
 }
-   .film-row {
+
+.film-row {
   display: grid;
   grid-template-columns: repeat(6, 180px);
   justify-content: center;
@@ -145,9 +202,8 @@ header {
   margin: 20px;
 }
 
-
 .film-card {
-  width: 180px; /* largura fixa para manter o formato vertical */
+  width: 180px;
   background-color: #bcbfbf;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -156,7 +212,7 @@ header {
   cursor: pointer;
   transition: transform 0.2s;
   padding: 10px;
-  height: 330px; /* altura maior para caber imagem + texto */
+  height: 330px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -185,6 +241,8 @@ header {
 .film-card:hover {
   transform: translateY(-5px);
 }
+
+/* --- RODAPÉ --- */
 .rodape {
   background-color: #080808;
   color: white;
@@ -193,31 +251,135 @@ header {
   margin-top: 50px;
   font-size: 15px;
 }
+
 .email-destaque {
   font-weight: bold;
-  color: #5b61b7; 
-  text-decoration: underline;}
-
- .botao-abaixo-header {
-  display: flex;
-  justify-content: flex-end;
-  background-color: #080808; 
-  margin-top: 0;     
-  padding: 10px 35px 10px 0;
+  color: #5b61b7;
+  text-decoration: underline;
 }
 
-.botao-adicionar {
+/* ADICIONE ESTES ESTILOS AO FINAL DE tela1.css */
+
+/* --- ESTILOS DO MODAL DO CARRINHO --- */
+
+/* O fundo escurecido (overlay) */
+.modal-overlay {
+  position: fixed; /* Fica fixo na tela mesmo com scroll */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Fundo preto semi-transparente */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Garante que fique acima de tudo */
+}
+
+/* A janela (conteúdo) do modal */
+.modal-conteudo {
+  background-color: #1c1c1c;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #5b61b7;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh; /* Altura máxima de 80% da tela */
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.modal-conteudo h2 {
+  text-align: center;
+  margin-top: 0;
+  color: #fff;
+}
+
+/* Botão de fechar (o "X" no canto) */
+.modal-fechar {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+/* Lista de itens dentro do modal */
+#lista-itens-carrinho {
+  overflow-y: auto; /* Adiciona barra de rolagem se os itens não couberem */
+  flex-grow: 1;
+  padding-right: 10px; /* Espaço para a barra de rolagem */
+}
+
+.item-carrinho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #444;
+}
+
+.item-carrinho img {
+  width: 50px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 15px;
+}
+
+.item-carrinho-info {
+  flex-grow: 1;
+}
+
+.item-carrinho-info h4 {
+  margin: 0 0 5px 0;
+  font-size: 16px;
+}
+
+.item-carrinho-info p {
+  margin: 0;
+  color: #aaa;
+  text-transform: capitalize;
+}
+
+.item-carrinho-preco {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.item-carrinho-remover {
+  background: none;
+  border: 1px solid #e63946;
+  color: #e63946;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  margin-left: 15px;
+  font-weight: bold;
+}
+
+/* Rodapé do modal com total e botão de finalizar */
+.modal-rodape {
+  margin-top: 20px;
+  text-align: right;
+}
+
+.botao-finalizar {
   background-color: #5b61b7;
   color: white;
-  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
-  font-size: 14px;
-  text-decoration: none;
+  padding: 12px 25px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-.botao-adicionar:hover {
-  background-color: #4046a1;
+.botao-finalizar:hover {
+  background-color: #5d67de;
 }

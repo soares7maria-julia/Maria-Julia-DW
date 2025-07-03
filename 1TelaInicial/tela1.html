@@ -30,9 +30,25 @@
 </header>
 
 
-<div class="botao-abaixo-header">
-  <a href="../6TelaAdicFilme/adicionarF.html" class="botao-adicionar"> Area Restrita</a>
+<!-- Coloque este código logo DEPOIS do fechamento do </header> -->
+
+<!-- CONTÊINER PARA O BOTÃO NO CANTO ESQUERDO -->
+<div class="canto-superior-esquerdo">
+  <a href="../6TelaAdicFilme/adicionarF.html" class="botao-adicionar">Área Restrita</a>
 </div>
+
+<!-- CONTÊINER PARA O CARRINHO NO CANTO DIREITO -->
+<div class="canto-superior-direito">
+  <div class="carrinho-container">
+    <!-- AQUI ESTÁ A MUDANÇA -->
+    <span class="carrinho-icone">🛒</span> 
+    <span class="carrinho-contador">0</span>
+  </div>
+</div>
+
+
+
+
 
  <div id="single-carousel" class="single-carousel">
     <img src="../img/AindaEstouAquiFormaPaisagem.jpg" alt="Ainda estou aqui"/>
@@ -54,6 +70,23 @@
   </p>
 </footer>
 
+<!-- ADICIONE ESTE CÓDIGO ANTES DE </BODY> EM tela1.html -->
+
+<!-- MODAL DO CARRINHO (INICIALMENTE OCULTO) -->
+<div id="modal-carrinho" class="modal-overlay" style="display: none;">
+  <div class="modal-conteudo">
+    <button id="fechar-modal-btn" class="modal-fechar">&times;</button>
+    <h2>Meu Carrinho</h2>
+    <div id="lista-itens-carrinho">
+      <!-- Os itens do carrinho serão inseridos aqui pelo JavaScript -->
+      <p>Seu carrinho está vazio.</p>
+    </div>
+    <div class="modal-rodape">
+      <h3>Total: <span id="total-carrinho">R$ 0,00</span></h3>
+      <button id="finalizar-compra-btn" class="botao-finalizar">Finalizar Compra</button>
+    </div>
+  </div>
+</div>
 
   <script src="tela1.js"></script>
 </body>

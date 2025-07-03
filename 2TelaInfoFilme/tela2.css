@@ -79,3 +79,56 @@ body {
     border-radius: 5px;
     font-size: 16px;
   }
+
+  /* ADICIONE ESTES ESTILOS AO FINAL DE tela2.css */
+
+/* Estilo para o botão de opção selecionado */
+.botao-opcao.selecionado {
+  background-color: #5b61b7; /* Cor de destaque */
+  border: 2px solid #fff;
+}
+
+/* Contêiner para o botão de adicionar ao carrinho */
+.secao-adicionar {
+  margin: 20px 30px;
+  padding: 15px;
+  background-color: #222;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.secao-adicionar p {
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+
+/* Botão "Adicionar ao Carrinho" */
+#adicionar-carrinho-btn {
+  background-color: #28a745; /* Verde */
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+#adicionar-carrinho-btn:hover {
+  background-color: #218838;
+}
+
+/* Botão "Ir para o Carrinho" */
+.botao-ir-carrinho {
+  background-color: #007bff; /* Azul */
+  color: white;
+  text-decoration: none;
+  padding: 12px 25px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.botao-ir-carrinho:hover {
+  background-color: #0056b3;
+}

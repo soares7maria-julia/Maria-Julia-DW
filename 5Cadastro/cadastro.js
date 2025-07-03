@@ -53,12 +53,30 @@ const cadastroForm = document.getElementById('cadastroForm');
       const email = cadastroForm.email.value.trim();
       const senha = cadastroForm.senha.value.trim();
 
-      if (nome && email && senha) {
-        // Aqui você pode implementar o que acontece ao cadastrar, por exemplo:
-        alert(`Cadastro realizado com sucesso!\nNome: ${nome}\nEmail: ${email}`);
-      }
-    });
+     if (nome && email && senha) {
+  fetch('http://localhost:3000/cadastrar', {
 
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ nome, email, senha })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.erro) {
+      alert("Erro: " + data.erro);
+    } else {
+      alert("Cadastro realizado com sucesso!");
+      window.location.href = "../4TelaLogin/login.html"; // redireciona pro login
+    }
+  })
+  .catch(err => {
+    console.error("Erro ao cadastrar:", err);
+    alert("Erro ao cadastrar. Tente novamente mais tarde.");
+  });
+}
+    });
     btnLogin.addEventListener("click", () => {
       // Redireciona para a página de login
      window.location.href = "../4TelaLogin/login.html";
