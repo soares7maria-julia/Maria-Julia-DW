@@ -11,14 +11,28 @@
 
   <!-- 🟨 Cadastrar colaborador vem primeiro -->
   <section>
-    <h2>Cadastrar Colaborador</h2>
-    <form id="formColaborador">
-      <input type="text" id="nome" placeholder="Nome" required />
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="senha" placeholder="Senha" required />
-      <button type="submit">Cadastrar</button>
-    </form>
-  </section>
+  <h2>Cadastrar Colaborador</h2>
+  <form id="formColaborador">
+    <input type="text" id="nome" name="nome" placeholder="Nome" required />
+    <input type="email" id="email" name="email" placeholder="Email" required />
+    <div class="senha-container">
+  <input type="password" id="senha" name="senha" placeholder="Senha" required />
+  <span id="toggleSenha" class="icone-olho">👁</span>
+</div>
+
+
+
+
+    <select id="tipo" name="tipo" required>
+      <option value="">Selecione o status</option>
+      <option value="normal">Normal</option>
+      <option value="colaborador">Colaborador</option>
+      <option value="chefe">Chefe</option> <!-- você pode remover se não quiser cadastrar chefes aqui -->
+    </select>
+
+    <button type="submit" id="btnSalvar">Cadastrar</button>
+  </form>
+</section>
 
   <!-- 🟩 Lista de usuários vem depois -->
   <section>
@@ -30,6 +44,7 @@
           <th>Nome</th>
           <th>Email</th>
           <th>Tipo</th>
+          <th>Ações</th> 
         </tr>
       </thead>
       <tbody></tbody>

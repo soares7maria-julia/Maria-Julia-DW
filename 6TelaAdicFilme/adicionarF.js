@@ -1,8 +1,23 @@
+const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+
+if (!usuario || (usuario.tipo !== 'colaborador' && usuario.tipo !== 'chefe')) {
+  alert('Acesso negado. Apenas colaboradores e chefes podem adicionar filmes.');
+  window.location.href = '../1TelaInicial/tela1.html'; // ou outra página de login/home
+}
+
+
 let filmesAdicionados = [];
 
     document.getElementById('formFilme').addEventListener('submit', function(e) {
       e.preventDefault();
-      
+      const linkFilme = document.getElementById('linkFilme').value.trim();
+if (!linkFilme) {
+  mostrarErro('Informe o link do filme!');
+  resetarBotao();
+  return;
+} 
+  
+
       const btn = document.querySelector('.btn-adicionar');
       btn.disabled = true;
       btn.textContent = 'ADICIONANDO...';
@@ -76,14 +91,9 @@ let filmesAdicionados = [];
   resetarBotao();
 });
 
-          
-          mostrarSucesso();
-          document.getElementById('formFilme').reset();
-          limparPreview();
-          resetarBotao();
         }, 1000);
       };
-      ///////
+     
       reader.readAsDataURL(capaFile);
     });
 
@@ -124,7 +134,7 @@ let filmesAdicionados = [];
           `"${filme.genero}"`,
           `"${filme.duracao}"`,
           `"${filme.capa}"`,  // img (base64)
-          `""`,  // link (vazio por enquanto)
+          `"${linkFilme}"`, // ← adicionar esta linha"`,  // link (vazio por enquanto)
           filme.categoria
         ].join(',');
         csvContent += linha + "\n";
@@ -180,6 +190,7 @@ let filmesAdicionados = [];
           this.value = '';
           return;
         }
+
         
         const reader = new FileReader();
         reader.onload = function(e) {

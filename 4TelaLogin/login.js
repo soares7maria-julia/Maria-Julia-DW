@@ -30,14 +30,11 @@ loginForm.addEventListener("submit", function (e) {
       if (data.erro) {
         alert(data.erro);
       } else {
-        // Redireciona com base no tipo
-        if (data.usuario.tipo === "colaborador") {
-  window.location.href = "../TelaAdicionarFilmes/adicionar.html";
-} else if (data.usuario.tipo === "chefe") {
-  window.location.href = "../TelaChefe/painel.html"; // ou qualquer nome da tela do chefe
-} else {
-  window.location.href = "../TelaInicial/Tela1.html";
-}
+        localStorage.setItem("usuarioNome", data.usuario.nome);
+
+       // Redireciona todo mundo para a tela inicial:
+window.location.href = "../1TelaInicial/Tela1.html";
+
 
       }
     })

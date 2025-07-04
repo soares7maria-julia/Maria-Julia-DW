@@ -205,20 +205,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ******** ADICIONE ESTE NOVO EVENTO AQUI ********
     finalizarCompraBtn.addEventListener('click', () => {
-        // Pega o carrinho do localStorage para calcular o total
-        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        const total = carrinho.reduce((acc, item) => acc + item.valor, 0);
+  const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  const total = carrinho.reduce((acc, item) => acc + item.valor, 0);
 
-        if (total > 0) {
-            // Limpa o carrinho após ir para o pagamento (opcional, mas recomendado)
-            // localStorage.removeItem('carrinho'); 
-            
-            // Redireciona para a tela de pagamento, passando o valor total na URL
-            window.location.href = `../3TelaPagamento/tela3.html?valor=${total.toFixed(2)}`;
-        } else {
-            alert("Seu carrinho está vazio!");
-        }
+  if (total > 0) {
+    const ultimoItem = carrinho[carrinho.length - 1];
+
+    carregarCSV('../InfoFilmes.csv').then(dados => {
+      const filmeCompleto = dados.find(f => f.titulo === ultimoItem.titulo);
+
+      if (filmeCompleto) {
+        window.location.href =
+          `../3TelaPagamento/tela3.html?valor=${total.toFixed(2)}` +
+          `&titulo=${encodeURIComponent(filmeCompleto.titulo)}` +
+          `&ano=${encodeURIComponent(filmeCompleto.ano)}` +
+          `&genero=${encodeURIComponent(filmeCompleto.genero)}` +
+          `&duracao=${encodeURIComponent(filmeCompleto.duracao)}` +
+          `&img=${encodeURIComponent(filmeCompleto.img)}`;
+      } else {
+        alert('Erro ao encontrar informações completas do filme.');
+      }
     });
+  } else {
+    alert("Seu carrinho está vazio!");
+  }
+});
+
     // ******** FIM DO NOVO CÓDIGO ********
 
 
@@ -231,4 +243,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Atualiza o contador no header assim que a página carrega
     atualizarContadorHeader();
+    // Trocar "Login" pelo nome do usuário (se estiver logado)
+const spanLogin = document.querySelector("#login-circle span");
+const nomeUsuario = localStorage.getItem("usuarioNome");
+if (nomeUsuario && spanLogin) {
+    spanLogin.textContent = nomeUsuario;
+}
+
 });

@@ -52,7 +52,48 @@ form {
   flex-direction: column;
 }
 
-form input {
+form input,
+.senha-container input {
+  background-color: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 5px;
+  color: #f1f1f1;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.senha-container input[type="password"] {
+  padding-right: 40px; /* apenas adiciona espaço extra pro olho */
+}
+
+.senha-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+
+.icone-olho {
+  position: absolute;
+  top: 7px; /* ou 11px, 12px… */
+  transform: none;
+  right: 12px;
+  font-size: 18px;
+  color: #aaa;
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.icone-olho:hover {
+  color: #ffffff;
+}
+
+
+
+form select {
   background-color: #2a2a2a;
   border: 1px solid #555;
   border-radius: 5px;
@@ -60,6 +101,11 @@ form input {
   padding: 10px;
   margin-bottom: 10px;
 }
+form select:focus,
+form input:focus {
+  outline: 2px solid #545ffa;
+}
+
 
 form button {
   background-color: #545ffa;
@@ -67,4 +113,36 @@ form button {
   padding: 10px;
   border: none;
   border-radius: 5px;
+}
+
+/* Botões da tabela */
+button.btn-editar,
+button.btn-excluir {
+  padding: 6px 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Botão Editar */
+button.btn-editar {
+  background-color: #4c49a6; /* verde */
+  color: white;
+}
+
+/* Botão Excluir */
+button.btn-excluir {
+  background-color: #190f34; /* vermelho */
+  color: white;
+}
+
+/* Efeito hover */
+button.btn-editar:hover {
+  background-color: #545ffa;
+}
+
+button.btn-excluir:hover {
+  background-color: #545ffa;
 }
