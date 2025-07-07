@@ -1,6 +1,6 @@
 const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
 
-if (!usuario || (usuario.tipo !== 'colaborador' && usuario.tipo !== 'chefe')) {
+if (!usuario || (usuario.tipo === 'normal' )) {
   alert('Acesso negado. Apenas colaboradores e chefes podem adicionar filmes.');
   window.location.href = '../1TelaInicial/tela1.html'; // ou outra página de login/home
 }
@@ -165,8 +165,7 @@ if (!linkFilme) {
 
     function voltarPagina() {
       if (confirm('Tem certeza que deseja voltar? Os dados não salvos serão perdidos.')) {
-        // Aqui você redirecionaria para a página anterior
-        // window.history.back() ou window.location.href = 'pagina-anterior.html'
+         window.location.href = '../1TelaInicial/tela1.html'
         console.log('Voltando para a página anterior...');
       }
     }

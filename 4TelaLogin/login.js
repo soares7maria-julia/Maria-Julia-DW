@@ -18,24 +18,18 @@ loginForm.addEventListener("submit", function (e) {
 
   if (email && senha) {
     fetch('http://localhost:3000/login', {
-
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, senha })
     })
     .then(res => res.json())
     .then(data => {
-      if (data.erro) {
-        alert(data.erro);
-      } else {
-        localStorage.setItem("usuarioNome", data.usuario.nome);
-
-       // Redireciona todo mundo para a tela inicial:
-window.location.href = "../1TelaInicial/Tela1.html";
-
-
+      if (data.sucesso) {
+  localStorage.setItem('usuarioLogado', JSON.stringify(data.usuario)); // salva usuário
+  // Sempre redireciona para a tela principal
+  window.location.href = '../1TelaInicial/tela1.html';
+     } else {
+        alert(data.erro || 'Erro desconhecido');
       }
     })
     .catch(err => {
@@ -43,9 +37,4 @@ window.location.href = "../1TelaInicial/Tela1.html";
       alert("Erro ao tentar login. Tente novamente mais tarde.");
     });
   }
-});
-
-// Botão de cadastro
-btnCadastrar.addEventListener("click", () => {
-  window.location.href = "../5Cadastro/cadastro.html";
 });

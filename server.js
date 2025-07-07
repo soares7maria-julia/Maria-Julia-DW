@@ -50,15 +50,16 @@ app.post('/login', (req, res) => {
 
 // ✅ ROTA: Cadastrar usuário comum
 app.post('/cadastrar', (req, res) => {
-  const { nome, email, senha } = req.body;
+const { nome, email, senha } = req.body;
+const tipo = 'normal'; // ← tipo padrão
 
   if (!nome || !email || !senha) {
     return res.status(400).json({ erro: 'Preencha todos os campos!' });
   }
 
-  const sql = `INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`;
+const sql = `INSERT INTO usuarios (nome, email, senha, tipo) VALUES (?, ?, ?, ?)`;
 
-  db.run(sql, [nome, email, senha], function (err) {
+db.run(sql, [nome, email, senha, tipo], function (err) {
     if (err) {
       if (err.message.includes('UNIQUE')) {
         return res.status(400).json({ erro: 'E-mail já cadastrado!' });

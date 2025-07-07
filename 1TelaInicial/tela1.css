@@ -94,7 +94,21 @@ header {
   margin-top: 5px;
 }
 
-/* --- POSICIONAMENTO DOS BOTÕES ABAIXO DO HEADER --- */
+#btnLogout {
+  margin-top: 5px;
+  background-color: #5b61b7;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+#btnLogout:hover {
+  background-color: #4a4fcf;
+}
+
 
 /* Contêiner para o botão "Área Restrita" no canto esquerdo */
 .canto-superior-esquerdo {

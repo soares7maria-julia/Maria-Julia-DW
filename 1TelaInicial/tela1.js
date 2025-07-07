@@ -1,4 +1,3 @@
-
 const carouselElement = document.getElementById('single-carousel');
 const imagens = carouselElement.querySelectorAll('img');
 let index = 0;
@@ -16,7 +15,6 @@ setInterval(() => {
   mostrarImagem(index);
 }, 3000);
 
-
 function carregarCSV(url) {
   return fetch(url)
     .then(response => response.text())
@@ -33,11 +31,10 @@ function carregarCSV(url) {
     });
 }
 
-
 function criarCard(filme) {
   const link = `../2TelaInfoFilme/tela2.html?titulo=${encodeURIComponent(filme.titulo)}
-  &ano=${filme.ano}&genero=${encodeURIComponent(filme.genero)
-  }&duracao=${encodeURIComponent(filme.duracao)}
+  &ano=${filme.ano}&genero=${encodeURIComponent(filme.genero)}
+  &duracao=${encodeURIComponent(filme.duracao)}
   &img=${filme.img}&link=${encodeURIComponent(filme.link)}`;
 
   const card = document.createElement('div');
@@ -53,7 +50,6 @@ function criarCard(filme) {
   a.appendChild(img);
   card.appendChild(a);
 
-  // 👇 Adiciona título e gênero (ou outras infos) no card
   const titulo = document.createElement('h3');
   titulo.textContent = filme.titulo;
   card.appendChild(titulo);
@@ -65,14 +61,13 @@ function criarCard(filme) {
   return card;
 }
 
-
 function exibirFilmes(dados) {
   const destaqueContainer = document.getElementById('em-destaque');
   const filmesContainer = document.getElementById('filmes');
 
   dados.forEach(filme => {
     const card = criarCard(filme);
-    filmesParaPesquisa.push(card);  // adiciona para busca depois
+    filmesParaPesquisa.push(card);
     if (filme.categoria === 'EM DESTAQUE') {
       destaqueContainer.appendChild(card);
     } else if (filme.categoria === 'FILMES') {
@@ -93,161 +88,170 @@ searchInput.addEventListener('input', () => {
     const img = card.querySelector('img');
     const altText = img ? img.alt.toLowerCase() : '';
 
-    if (altText.includes(searchTerm)) {
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
-    }
+    card.style.display = altText.includes(searchTerm) ? 'block' : 'none';
   });
 });
 
 // --- CLIQUE NA IMAGEM DE LOGIN ---
+
 const loginCircle = document.getElementById('login-circle');
 
 loginCircle.addEventListener('click', () => {
   window.location.href = '../4TelaLogin/login.html'; 
 });
 
-// --- INICIAR ---
-carregarCSV('../InfoFilmes.csv').then(exibirFilmes);
-
-// ADICIONE ESTE CÓDIGO COMPLETO AO FINAL DE tela1.js
+// --- INICIALIZAÇÃO APÓS CARREGAR O DOM ---
 
 document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('modal-carrinho');
-    const fecharModalBtn = document.getElementById('fechar-modal-btn');
-    const carrinhoIcone = document.querySelector('.carrinho-container'); // Ícone do carrinho no header
-    const listaItensCarrinho = document.getElementById('lista-itens-carrinho');
-    const totalCarrinhoEl = document.getElementById('total-carrinho');
-    const contadorCarrinhoEl = document.querySelector('.carrinho-contador');
-    const finalizarCompraBtn = document.getElementById('finalizar-compra-btn');
+  // Elementos do modal e carrinho
+  const modal = document.getElementById('modal-carrinho');
+  const fecharModalBtn = document.getElementById('fechar-modal-btn');
+  const carrinhoIcone = document.querySelector('.carrinho-container');
+  const listaItensCarrinho = document.getElementById('lista-itens-carrinho');
+  const totalCarrinhoEl = document.getElementById('total-carrinho');
+  const contadorCarrinhoEl = document.querySelector('.carrinho-contador');
+  const finalizarCompraBtn = document.getElementById('finalizar-compra-btn');
+  const btnAreaRestrita = document.getElementById("btnAreaRestrita");
+ const spanLogin = document.querySelector("#login-circle span");
+const usuarioLogadoStr = localStorage.getItem("usuarioLogado");
 
-    // Função para abrir o modal
-    function abrirModal() {
-        popularModalCarrinho();
-        modal.style.display = 'flex';
-    }
+if (usuarioLogadoStr && spanLogin) {
+  const usuario = JSON.parse(usuarioLogadoStr);
+  spanLogin.textContent = usuario.nome || "Login";
+}
+  
+  const btnLogout = document.getElementById("btnLogout");
 
-    // Função para fechar o modal
-    function fecharModal() {
-        modal.style.display = 'none';
-    }
+if (usuarioLogadoStr && spanLogin && btnLogout) {
+  const usuario = JSON.parse(usuarioLogadoStr);
+  spanLogin.textContent = usuario.nome || "Login";
+  btnLogout.style.display = "block";
+  btnLogout.addEventListener("click", () => {
+    localStorage.removeItem("usuarioLogado");
+    location.reload();
+  });
+}
 
-    // Função para atualizar o contador de itens no ícone do header
-    function atualizarContadorHeader() {
-        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        contadorCarrinhoEl.textContent = carrinho.length;
-    }
 
-    // Função principal: lê o localStorage e preenche o modal com os itens
-    function popularModalCarrinho() {
-        const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        listaItensCarrinho.innerHTML = ''; // Limpa a lista antes de adicionar os itens
-        let total = 0;
+   btnAreaRestrita.addEventListener("click", (e) => {
+  e.preventDefault();
 
-        if (carrinho.length === 0) {
-            listaItensCarrinho.innerHTML = '<p>Seu carrinho está vazio.</p>';
-            finalizarCompraBtn.style.display = 'none'; // Esconde o botão se não houver itens
-        } else {
-            finalizarCompraBtn.style.display = 'inline-block'; // Mostra o botão
-            carrinho.forEach((item, index) => {
-                const itemHTML = `
-                    <div class="item-carrinho">
-                        <img src="../img/${item.img}" alt="${item.titulo}">
-                        <div class="item-carrinho-info">
-                            <h4>${item.titulo}</h4>
-                            <p>${item.tipo}</p>
-                        </div>
-                        <span class="item-carrinho-preco">R$ ${item.valor.toFixed(2)}</span>
-                        <button class="item-carrinho-remover" data-index="${index}">&times;</button>
-                    </div>
-                `;
-                listaItensCarrinho.innerHTML += itemHTML;
-                total += item.valor;
-            });
-        }
+  const usuarioStr = localStorage.getItem("usuarioLogado");
+  if (!usuarioStr) {
+    alert("Você precisa estar logado para acessar esta área.");
+    return;
+  }
 
-        totalCarrinhoEl.textContent = `R$ ${total.toFixed(2)}`;
-        adicionarEventosRemover();
-    }
-
-    // Função para adicionar o evento de clique nos botões de remover item
-    function adicionarEventosRemover() {
-        document.querySelectorAll('.item-carrinho-remover').forEach(botao => {
-            botao.addEventListener('click', (e) => {
-                const index = e.target.dataset.index;
-                removerItemDoCarrinho(index);
-            });
-        });
-    }
-
-    // Função para remover um item do carrinho
-    function removerItemDoCarrinho(index) {
-        let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-        carrinho.splice(index, 1); // Remove o item do array
-        localStorage.setItem('carrinho', JSON.stringify(carrinho)); // Atualiza o localStorage
-        popularModalCarrinho(); // Repopula o modal com a lista atualizada
-        atualizarContadorHeader(); // Atualiza o contador no header
-    }
-
-    // ... (código anterior do modal) ...
-
-    // --- EVENTOS DE CLIQUE ---
-    carrinhoIcone.addEventListener('click', abrirModal); // Clicar no ícone do carrinho abre o modal
-    fecharModalBtn.addEventListener('click', fecharModal); // Clicar no "X" fecha o modal
-
-    // Fecha o modal se o usuário clicar fora da janela de conteúdo
-    modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            fecharModal();
-        }
-    });
-
-    // ******** ADICIONE ESTE NOVO EVENTO AQUI ********
-    finalizarCompraBtn.addEventListener('click', () => {
-  const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-  const total = carrinho.reduce((acc, item) => acc + item.valor, 0);
-
-  if (total > 0) {
-    const ultimoItem = carrinho[carrinho.length - 1];
-
-    carregarCSV('../InfoFilmes.csv').then(dados => {
-      const filmeCompleto = dados.find(f => f.titulo === ultimoItem.titulo);
-
-      if (filmeCompleto) {
-        window.location.href =
-          `../3TelaPagamento/tela3.html?valor=${total.toFixed(2)}` +
-          `&titulo=${encodeURIComponent(filmeCompleto.titulo)}` +
-          `&ano=${encodeURIComponent(filmeCompleto.ano)}` +
-          `&genero=${encodeURIComponent(filmeCompleto.genero)}` +
-          `&duracao=${encodeURIComponent(filmeCompleto.duracao)}` +
-          `&img=${encodeURIComponent(filmeCompleto.img)}`;
-      } else {
-        alert('Erro ao encontrar informações completas do filme.');
-      }
-    });
+  const usuario = JSON.parse(usuarioStr);
+  if (usuario.tipo === "colaborador" || usuario.tipo === "chefe") {
+    window.location.href = "../6TelaAdicFilme/adicionarF.html";
   } else {
-    alert("Seu carrinho está vazio!");
+    alert("Você não tem permissão para acessar esta área.");
   }
 });
 
-    // ******** FIM DO NOVO CÓDIGO ********
 
+  // Função para abrir o modal
+  function abrirModal() {
+    popularModalCarrinho();
+    modal.style.display = 'flex';
+  }
 
-    // --- LÓGICA INICIAL ---
-    // Verifica se a URL tem o parâmetro para mostrar o carrinho
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('mostrarCarrinho') === 'true') {
-        abrirModal();
+  // Função para fechar o modal
+  function fecharModal() {
+    modal.style.display = 'none';
+  }
+
+  // Atualiza contador de itens no header
+  function atualizarContadorHeader() {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    contadorCarrinhoEl.textContent = carrinho.length;
+  }
+
+  // Preenche o modal com os itens do carrinho
+  function popularModalCarrinho() {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    listaItensCarrinho.innerHTML = '';
+    let total = 0;
+
+    if (carrinho.length === 0) {
+      listaItensCarrinho.innerHTML = '<p>Seu carrinho está vazio.</p>';
+      finalizarCompraBtn.style.display = 'none';
+    } else {
+      finalizarCompraBtn.style.display = 'inline-block';
+      carrinho.forEach((item, index) => {
+        const itemHTML = `
+          <div class="item-carrinho">
+            <img src="../img/${item.img}" alt="${item.titulo}">
+            <div class="item-carrinho-info">
+              <h4>${item.titulo}</h4>
+              <p>${item.tipo}</p>
+            </div>
+            <span class="item-carrinho-preco">R$ ${item.valor.toFixed(2)}</span>
+            <button class="item-carrinho-remover" data-index="${index}">&times;</button>
+          </div>`;
+        listaItensCarrinho.innerHTML += itemHTML;
+        total += item.valor;
+      });
     }
 
-    // Atualiza o contador no header assim que a página carrega
-    atualizarContadorHeader();
-    // Trocar "Login" pelo nome do usuário (se estiver logado)
-const spanLogin = document.querySelector("#login-circle span");
-const nomeUsuario = localStorage.getItem("usuarioNome");
-if (nomeUsuario && spanLogin) {
-    spanLogin.textContent = nomeUsuario;
-}
+    totalCarrinhoEl.textContent = `R$ ${total.toFixed(2)}`;
+    adicionarEventosRemover();
+  }
 
+  // Adiciona evento para remover item
+  function adicionarEventosRemover() {
+    document.querySelectorAll('.item-carrinho-remover').forEach(botao => {
+      botao.addEventListener('click', (e) => {
+        const index = e.target.dataset.index;
+        removerItemDoCarrinho(index);
+      });
+    });
+  }
+
+  // Remove item do carrinho
+  function removerItemDoCarrinho(index) {
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    carrinho.splice(index, 1);
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    popularModalCarrinho();
+    atualizarContadorHeader();
+  }
+
+  // Eventos para abrir e fechar modal
+  carrinhoIcone.addEventListener('click', abrirModal);
+  fecharModalBtn.addEventListener('click', fecharModal);
+  modal.addEventListener('click', e => {
+    if (e.target === modal) fecharModal();
+  });
+
+  // Evento para finalizar compra
+  finalizarCompraBtn.addEventListener('click', () => {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    const total = carrinho.reduce((acc, item) => acc + item.valor, 0);
+
+    if (total > 0) {
+      // Enviar apenas os valores e o total (sem buscar detalhes dos filmes)
+const valores = carrinho.map(item => item.valor);
+const valoresParam = encodeURIComponent(JSON.stringify(valores));
+
+window.location.href = `../3TelaPagamento/tela3.html?valores=${valoresParam}&total=${total.toFixed(2)}`;
+
+    } else {
+      alert("Seu carrinho está vazio!");
+    }
+  });
+
+  // Se a URL tem parâmetro mostrarCarrinho=true, abre o modal
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('mostrarCarrinho') === 'true') {
+    abrirModal();
+  }
+
+  // Atualiza contador no header ao carregar
+  atualizarContadorHeader();
 });
+
+// Carrega o CSV e exibe os filmes
+carregarCSV('../InfoFilmes.csv').then(exibirFilmes);
+
