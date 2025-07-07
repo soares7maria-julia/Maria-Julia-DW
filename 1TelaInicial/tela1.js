@@ -227,20 +227,24 @@ if (usuarioLogadoStr && spanLogin && btnLogout) {
 
   // Evento para finalizar compra
   finalizarCompraBtn.addEventListener('click', () => {
-    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
-    const total = carrinho.reduce((acc, item) => acc + item.valor, 0);
+  const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+  const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  const total = carrinho.reduce((acc, item) => acc + item.valor, 0);
 
-    if (total > 0) {
-      // Enviar apenas os valores e o total (sem buscar detalhes dos filmes)
-const valores = carrinho.map(item => item.valor);
-const valoresParam = encodeURIComponent(JSON.stringify(valores));
+  if (!usuario) {
+    alert("Você precisa estar logado para finalizar a compra.");
+    window.location.href = "../4TelaLogin/login.html";
+    return;
+  }
 
-window.location.href = `../3TelaPagamento/tela3.html?valores=${valoresParam}&total=${total.toFixed(2)}`;
-
-    } else {
-      alert("Seu carrinho está vazio!");
-    }
-  });
+  if (total > 0) {
+    const valores = carrinho.map(item => item.valor);
+    const valoresParam = encodeURIComponent(JSON.stringify(valores));
+    window.location.href = `../3TelaPagamento/tela3.html?valores=${valoresParam}&total=${total.toFixed(2)}`;
+  } else {
+    alert("Seu carrinho está vazio!");
+  }
+});
 
   // Se a URL tem parâmetro mostrarCarrinho=true, abre o modal
   const urlParams = new URLSearchParams(window.location.search);

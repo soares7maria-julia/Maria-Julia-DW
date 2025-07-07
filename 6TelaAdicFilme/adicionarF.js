@@ -177,11 +177,13 @@ if (!linkFilme) {
       
       if (file) {
         // Validação do tipo de arquivo
-        if (!file.type.startsWith('image/')) {
-          mostrarErro('Por favor, selecione apenas arquivos de imagem!');
-          this.value = '';
-          return;
-        }
+       const extensoesPermitidas = ['image/jpeg', 'image/jpg', 'image/webp'];
+
+if (!extensoesPermitidas.includes(file.type)) {
+  mostrarErro('Apenas imagens JPG, JPEG ou WEBP são permitidas!');
+  this.value = '';
+  return;
+}
         
         // Validação do tamanho (máximo 5MB)
         if (file.size > 5 * 1024 * 1024) {
@@ -218,13 +220,19 @@ if (!linkFilme) {
     });
 
     // Formatação automática da duração
-    document.getElementById('duracao').addEventListener('input', function() {
-      let valor = this.value.replace(/[^\d]/g, '');
-      if (valor.length >= 1) {
-        if (valor.length <= 2) {
-          this.value = valor + 'h ';
-        } else if (valor.length <= 4) {
-          this.value = valor.substring(0, 2) + 'h ' + valor.substring(2) + 'm';
-        }
-      }
-    });
+   document.getElementById('duracao').addEventListener('input', function() {
+  let valor = this.value.replace(/[^\d]/g, '');
+
+  if (valor.length === 0) {
+    this.value = '';
+  } else if (valor.length === 1) {
+    // Exemplo: 0 → "0h "
+    this.value = valor + 'h ';
+  } else if (valor.length === 2 || valor.length === 3) {
+    // Exemplo: 012 → "0h 12m"
+    this.value = valor.charAt(0) + 'h ' + valor.substring(1) + 'm';
+  } else if (valor.length > 3) {
+    // Limita a 1 dígito para hora e 2 para minutos
+    this.value = valor.charAt(0) + 'h ' + valor.substring(1, 3) + 'm';
+  }
+});
