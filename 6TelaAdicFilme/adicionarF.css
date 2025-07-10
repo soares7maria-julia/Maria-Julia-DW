@@ -311,3 +311,35 @@
         max-width: 300px;
       }
     }
+
+    .success-message {
+  display: none;
+  background-color: #4CAF50;
+  color: white;
+  padding: 12px;
+  margin: 20px auto;
+  width: fit-content;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+  animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+.error-message {
+  display: none;
+  background-color: #5b61b7;
+  color: white;
+  padding: 12px;
+  margin: 20px auto;
+  width: fit-content;
+  border-radius: 5px;
+  font-weight: bold;
+  text-align: center;
+}

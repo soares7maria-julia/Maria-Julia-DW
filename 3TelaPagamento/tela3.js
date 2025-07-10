@@ -1,3 +1,10 @@
+function lerCookie(nome) {
+  const valor = `; ${document.cookie}`;
+  const partes = valor.split(`; ${nome}=`);
+  if (partes.length === 2) return decodeURIComponent(partes.pop().split(';').shift());
+  return null;
+}
+
 function obterParametro(nome) {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(nome);
@@ -5,15 +12,12 @@ function obterParametro(nome) {
 
 window.onload = function () {
   const totalCompra = obterParametro('total');
-  const valoresBrutos = obterParametro('valores');
-
   if (totalCompra) {
     document.getElementById("valor-compra").textContent = `Valor da compra: R$${parseFloat(totalCompra).toFixed(2)}`;
   } else {
     document.getElementById("valor-compra").textContent = "Valor da compra não encontrado.";
   }
 
-  // Link de voltar (volta para a tela anterior)
   const voltarLink = document.getElementById("voltar-link");
   voltarLink.href = "javascript:history.back()";
 };
@@ -25,7 +29,6 @@ function finalizarCompra() {
   const ano = document.querySelector(".expiracao-container select:nth-child(2)").value;
   const cvv = document.getElementById("cvv").value.trim();
 
-  // Validações
   if (!/^\d{16}$/.test(numero)) {
     alert("Número do cartão deve conter 16 dígitos numéricos.");
     return;
@@ -46,16 +49,32 @@ function finalizarCompra() {
     return;
   }
 
-  // Se tudo estiver válido
   alert("Compra finalizada com sucesso!");
 
+  // 🔽 AGORA sim: mostra os botões com os links dos filmes
+  const carrinhoStr = lerCookie('carrinho');
+  let carrinho = [];
+  try {
+    carrinho = JSON.parse(carrinhoStr || "[]");
+  } catch {
+    carrinho = [];
+  }
+
+  const container = document.getElementById("botoes-filmes-comprados");
+  container.innerHTML = "";
+
+  carrinho.forEach(filme => {
+    const botao = document.createElement("button");
+    botao.textContent = filme.titulo;
+    botao.classList.add("botao-filme-comprado");
+    botao.onclick = () => {
+      window.open(filme.link, "_blank");
+    };
+    container.appendChild(botao);
+  });
+
+  document.getElementById("link-filme").style.display = "block";
+
   // Limpa o cookie do carrinho após a compra
-   document.cookie = "carrinho=; path=/; max-age=0";
-
-  const linkFilmeDiv = document.getElementById("link-filme");
-  const linkAssistir = document.getElementById("link-assistir");
-
-  // Como não temos mais a imagem para buscar no CSV, usamos um link padrão
-  linkAssistir.href = "https://www.youtube.com/";
-  linkFilmeDiv.style.display = "block";
+  document.cookie = "carrinho=; path=/; max-age=0";
 }

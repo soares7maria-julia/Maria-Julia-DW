@@ -79,6 +79,7 @@ function criarCard(filme) {
   genero.textContent = filme.genero;
   card.appendChild(genero);
 
+
   return card;
 }
 
@@ -281,6 +282,19 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
   // Atualiza contador no header ao carregar
   atualizarContadorHeader();
 });
+
+function adicionarAoCarrinho(filme) {
+  const carrinho = obterCarrinho();
+
+  const novoItem = {
+    titulo: filme.titulo,
+    img: filme.img,
+    link: filme.link, // ✅ ESSENCIAL!
+    tipo: "Compra", // ou "Aluguel" se quiser customizar
+    valor: 10 // ou 4 se for aluguel
+  };
+}
+
 
 // Carrega o CSV e exibe os filmes
 carregarCSV('../InfoFilmes.csv').then(exibirFilmes);

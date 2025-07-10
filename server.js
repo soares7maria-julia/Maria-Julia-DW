@@ -12,7 +12,7 @@ app.use(express.static('public'));
 app.use(express.json({ limit: '10mb' }));
 
 // Caminho do arquivo CSV
-const CSV_PATH = path.join(__dirname, 'public', 'InfoFilmes.csv');
+const CSV_PATH = path.join(__dirname, 'InfoFilmes.csv');
 
 // ✅ ROTA: Login
 app.post('/login', (req, res) => {
