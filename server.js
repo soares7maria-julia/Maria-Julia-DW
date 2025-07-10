@@ -250,7 +250,41 @@ db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
 });
 
 });
+function atualizarCSVFilmes() {
+  db.all("SELECT titulo, ano, genero, duracao, capa, linkFilme, categoria FROM filmes", [], (err, rows) => {
+    if (err) {
+      console.error("Erro ao buscar filmes para o CSV:", err);
+      return;
+    }
 
+    const csvHeader = 'titulo,ano,genero,duracao,img,link,categoria\n';
+
+    const csvData = rows.map(filme => {
+      // Função simples para escapar aspas duplas no valor e envolver entre aspas
+      function escapaCSV(valor) {
+        if (!valor) return '""';
+        return `"${valor.replace(/"/g, '""')}"`;
+      }
+
+      return [
+        escapaCSV(filme.titulo),
+        filme.ano,
+        escapaCSV(filme.genero),
+        escapaCSV(filme.duracao),
+        escapaCSV(filme.capa),
+        escapaCSV(filme.linkFilme),
+        escapaCSV(filme.categoria)
+      ].join(',');
+    }).join('\n');
+
+    try {
+      fs.writeFileSync(CSV_PATH, csvHeader + csvData, 'utf8');
+      console.log('Arquivo InfoFilmes.csv atualizado com sucesso!');
+    } catch (err) {
+      console.error('Erro ao escrever no arquivo CSV de filmes:', err);
+    }
+  });
+}
 
 // ✅ Inicia o servidor
 app.listen(PORT, () => {
@@ -311,17 +345,20 @@ app.post('/adicionar-filme', (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.run(sql, [titulo, genero, duracao, ano, categoria, capa, nomeArquivoCapa, linkFilme, dataAdicao], function(err) {
-    if (err) {
-      console.error('Erro ao inserir filme:', err);
-      if (err.message.includes('UNIQUE constraint failed')) {
-        return res.status(409).json({ error: 'Filme com este título já existe' });
-      }
-      return res.status(500).json({ error: 'Erro no servidor' });
+db.run(sql, [titulo, genero, duracao, ano, categoria, capa, nomeArquivoCapa, linkFilme, dataAdicao], function(err) {
+  if (err) {
+    console.error('Erro ao inserir filme:', err);
+    if (err.message.includes('UNIQUE constraint failed')) {
+      return res.status(409).json({ error: 'Filme com este título já existe' });
     }
-    res.json({ message: 'Filme adicionado com sucesso', id: this.lastID });
-  });
+    return res.status(500).json({ error: 'Erro no servidor' });
+  }
+
+  // ✅ Sucesso: agora atualiza o CSV e responde
+  atualizarCSVFilmes();
+  res.json({ message: 'Filme adicionado com sucesso', id: this.lastID });
 });
+
 
 // ✅ ROTA: Comprar um filme
 app.post('/comprar', (req, res) => {
@@ -358,4 +395,6 @@ app.post('/alugar', (req, res) => {
     mensagem: `Aluguel realizado com sucesso! Valor: R$ ${precoAluguel.toFixed(2)}`,
     valor: precoAluguel
   });
+ });
 });
+

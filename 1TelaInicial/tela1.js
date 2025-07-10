@@ -1,3 +1,24 @@
+function lerCookie(nome) {
+  const valor = `; ${document.cookie}`;
+  const partes = valor.split(`; ${nome}=`);
+  if (partes.length === 2) return decodeURIComponent(partes.pop().split(';').shift());
+  return null;
+}
+
+function obterCarrinho() {
+  const carrinhoStr = lerCookie('carrinho');
+  if (!carrinhoStr) {
+    const vazio = [];
+    document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(vazio))}; path=/; max-age=3600`;
+    return vazio;
+  }
+  try {
+    return JSON.parse(carrinhoStr);
+  } catch {
+    return [];
+  }
+}
+
 const carouselElement = document.getElementById('single-carousel');
 const imagens = carouselElement.querySelectorAll('img');
 let index = 0;
@@ -103,40 +124,44 @@ loginCircle.addEventListener('click', () => {
 // --- INICIALIZAÇÃO APÓS CARREGAR O DOM ---
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Elementos do modal e carrinho
   const modal = document.getElementById('modal-carrinho');
-  const fecharModalBtn = document.getElementById('fechar-modal-btn');
-  const carrinhoIcone = document.querySelector('.carrinho-container');
-  const listaItensCarrinho = document.getElementById('lista-itens-carrinho');
-  const totalCarrinhoEl = document.getElementById('total-carrinho');
-  const contadorCarrinhoEl = document.querySelector('.carrinho-contador');
-  const finalizarCompraBtn = document.getElementById('finalizar-compra-btn');
-  const btnAreaRestrita = document.getElementById("btnAreaRestrita");
- const spanLogin = document.querySelector("#login-circle span");
-const usuarioLogadoStr = localStorage.getItem("usuarioLogado");
-
-if (usuarioLogadoStr && spanLogin) {
-  const usuario = JSON.parse(usuarioLogadoStr);
-  spanLogin.textContent = usuario.nome || "Login";
-}
-  
+const fecharModalBtn = document.getElementById('fechar-modal-btn');
+const carrinhoIcone = document.querySelector('.carrinho-container');
+const listaItensCarrinho = document.getElementById('lista-itens-carrinho');
+const totalCarrinhoEl = document.getElementById('total-carrinho');
+const contadorCarrinhoEl = document.querySelector('.carrinho-contador');
+const finalizarCompraBtn = document.getElementById('finalizar-compra-btn');
+const btnAreaRestrita = document.getElementById("btnAreaRestrita");
   const btnLogout = document.getElementById("btnLogout");
+  const usuarioLogadoStr = lerCookie("usuarioLogado");
+  const spanLogin = document.getElementById("nome-usuario");
 
-if (usuarioLogadoStr && spanLogin && btnLogout) {
-  const usuario = JSON.parse(usuarioLogadoStr);
-  spanLogin.textContent = usuario.nome || "Login";
-  btnLogout.style.display = "block";
-  btnLogout.addEventListener("click", () => {
-    localStorage.removeItem("usuarioLogado");
-    location.reload();
+
+  if (usuarioLogadoStr && spanLogin) {
+    const usuario = JSON.parse(usuarioLogadoStr);
+    spanLogin.textContent = usuario.nome || "Login";
+  }
+
+  if (usuarioLogadoStr && spanLogin && btnLogout) {
+    btnLogout.addEventListener("click", () => {
+      document.cookie = "usuarioLogado=; path=/; max-age=0";
+      location.reload();
+    });
+  }
+
+  // Evento que limpa o carrinho no cookie quando a página for fechada,
+  // mas só se não estiver logado
+  window.addEventListener('beforeunload', () => {
+    const usuarioLogadoStr = lerCookie('usuarioLogado');
+    if (!usuarioLogadoStr) {
+      document.cookie = 'carrinho=; path=/; max-age=0';
+    }
   });
-}
-
 
    btnAreaRestrita.addEventListener("click", (e) => {
   e.preventDefault();
 
-  const usuarioStr = localStorage.getItem("usuarioLogado");
+   const usuarioStr = lerCookie("usuarioLogado");
   if (!usuarioStr) {
     alert("Você precisa estar logado para acessar esta área.");
     return;
@@ -149,7 +174,6 @@ if (usuarioLogadoStr && spanLogin && btnLogout) {
     alert("Você não tem permissão para acessar esta área.");
   }
 });
-
 
   // Função para abrir o modal
   function abrirModal() {
@@ -164,13 +188,14 @@ if (usuarioLogadoStr && spanLogin && btnLogout) {
 
   // Atualiza contador de itens no header
   function atualizarContadorHeader() {
-    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    const carrinho = obterCarrinho();
     contadorCarrinhoEl.textContent = carrinho.length;
+
   }
 
   // Preenche o modal com os itens do carrinho
   function popularModalCarrinho() {
-    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    const carrinho = obterCarrinho();
     listaItensCarrinho.innerHTML = '';
     let total = 0;
 
@@ -193,6 +218,7 @@ if (usuarioLogadoStr && spanLogin && btnLogout) {
         listaItensCarrinho.innerHTML += itemHTML;
         total += item.valor;
       });
+
     }
 
     totalCarrinhoEl.textContent = `R$ ${total.toFixed(2)}`;
@@ -211,9 +237,9 @@ if (usuarioLogadoStr && spanLogin && btnLogout) {
 
   // Remove item do carrinho
   function removerItemDoCarrinho(index) {
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    let carrinho = JSON.parse(lerCookie('carrinho')) || [];
     carrinho.splice(index, 1);
-    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(carrinho))}; path=/; max-age=3600`;
     popularModalCarrinho();
     atualizarContadorHeader();
   }
@@ -227,8 +253,8 @@ if (usuarioLogadoStr && spanLogin && btnLogout) {
 
   // Evento para finalizar compra
   finalizarCompraBtn.addEventListener('click', () => {
-  const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
-  const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+  const usuario = JSON.parse(lerCookie('usuarioLogado'));
+  const carrinho = obterCarrinho();
   const total = carrinho.reduce((acc, item) => acc + item.valor, 0);
 
   if (!usuario) {
@@ -258,4 +284,3 @@ if (usuarioLogadoStr && spanLogin && btnLogout) {
 
 // Carrega o CSV e exibe os filmes
 carregarCSV('../InfoFilmes.csv').then(exibirFilmes);
-

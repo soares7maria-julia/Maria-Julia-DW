@@ -15,6 +15,16 @@ loginForm.addEventListener("submit", function (e) {
   e.preventDefault();
   const email = loginForm.email.value.trim();
   const senha = loginForm.senha.value.trim();
+  
+  if (!email) {
+  alert("Por favor, insira o email.");
+  return;
+}
+if (!senha) {
+  alert("Por favor, insira a senha.");
+  return;
+}
+
 
   if (email && senha) {
     fetch('http://localhost:3000/login', {
@@ -25,7 +35,8 @@ loginForm.addEventListener("submit", function (e) {
     .then(res => res.json())
     .then(data => {
       if (data.sucesso) {
-  localStorage.setItem('usuarioLogado', JSON.stringify(data.usuario)); // salva usuário
+  document.cookie = `usuarioLogado=${encodeURIComponent(JSON.stringify(data.usuario))}; path=/; max-age=3600`;
+
   // Sempre redireciona para a tela principal
   window.location.href = '../1TelaInicial/tela1.html';
      } else {
@@ -37,4 +48,8 @@ loginForm.addEventListener("submit", function (e) {
       alert("Erro ao tentar login. Tente novamente mais tarde.");
     });
   }
+});
+
+btnCadastrar.addEventListener("click", function () {
+  window.location.href = "../5Cadastro/cadastro.html"; // ajuste o caminho se necessário
 });

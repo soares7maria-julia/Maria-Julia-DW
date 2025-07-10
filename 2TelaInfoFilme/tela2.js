@@ -1,3 +1,10 @@
+function lerCookie(nome) {
+  const valor = `; ${document.cookie}`;
+  const partes = valor.split(`; ${nome}=`);
+  if (partes.length === 2) return decodeURIComponent(partes.pop().split(';').shift());
+  return null;
+}
+
 // --- 1. PEGAR DADOS DO FILME DA URL ---
 const params = new URLSearchParams(window.location.search);
 const titulo = params.get("titulo");
@@ -49,14 +56,16 @@ botaoAdicionar.addEventListener('click', () => {
         return;
     }
 
-    // Pega o carrinho atual do localStorage ou cria um novo array
-    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+    // Lê o cookie do carrinho
+const carrinhoCookie = lerCookie('carrinho');
+let carrinho = carrinhoCookie ? JSON.parse(carrinhoCookie) : [];
 
-    // Adiciona o novo item ao carrinho
-    carrinho.push(opcaoSelecionada);
+// Adiciona o novo item
+carrinho.push(opcaoSelecionada);
 
-    // Salva o carrinho atualizado de volta no localStorage
-    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+// Salva o cookie atualizado (1 hora de validade)
+document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(carrinho))}; path=/; max-age=3600`;
+
 
     // Feedback para o usuário
     alert(`"${opcaoSelecionada.titulo}" foi adicionado ao seu carrinho!`);
@@ -65,3 +74,4 @@ botaoAdicionar.addEventListener('click', () => {
     botaoAdicionar.disabled = true;
     botaoAdicionar.textContent = 'Adicionado!';
 });
+ 

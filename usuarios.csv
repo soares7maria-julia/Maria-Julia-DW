@@ -1,5 +1,4 @@
 id,nome,email,senha,tipo
-1,"Admin Chefe","chefe@admin.com","admin123","chefe"
-2,"Oksane Reifur","oksanereifur@alunos.utfpr.edu.br","7776777","normal"
-3,"mariahh","mariahh@gmail.com","9990999","normal"
-4,"thaiss","thaisinha12@hotmall.com","CACAU12","colaborador"
+1,"Admin Chefe",chefe@admin.com,admin123,chefe
+3,"mariahh",mariahh@gmail.com,9990999,normal
+4,"thaiss",thaisinha12@hotmall.com,CACAU12,colaborador

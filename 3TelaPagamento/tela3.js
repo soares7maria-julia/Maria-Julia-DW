@@ -49,6 +49,9 @@ function finalizarCompra() {
   // Se tudo estiver válido
   alert("Compra finalizada com sucesso!");
 
+  // Limpa o cookie do carrinho após a compra
+   document.cookie = "carrinho=; path=/; max-age=0";
+
   const linkFilmeDiv = document.getElementById("link-filme");
   const linkAssistir = document.getElementById("link-assistir");
 

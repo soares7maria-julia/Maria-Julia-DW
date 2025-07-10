@@ -1,101 +1,134 @@
-const usuario = JSON.parse(localStorage.getItem('usuarioLogado'));
+
+function lerCookie(nome) {
+  const valor = `; ${document.cookie}`;
+  const partes = valor.split(`; ${nome}=`);
+  if (partes.length === 2) return decodeURIComponent(partes.pop().split(';').shift());
+  return null;
+}
+const cookieBruto = lerCookie('usuarioLogado');
+const usuario = cookieBruto ? JSON.parse(cookieBruto) : null;
+
+
+function salvarCookie(nome, valor, horasValidade = 1) {
+  const dataExpiracao = new Date();
+  dataExpiracao.setTime(dataExpiracao.getTime() + (horasValidade * 60 * 60 * 1000));
+  document.cookie = `${nome}=${encodeURIComponent(valor)}; path=/; expires=${dataExpiracao.toUTCString()}`;
+}
+const email = document.getElementById('email').value;
+const senha = document.getElementById('senha').value;
+
+
+fetch('http://localhost:3000/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email, senha })
+})
+.then(res => res.json())
+.then(data => {
+  if (data.sucesso) {
+    salvarCookie('usuarioLogado', JSON.stringify(data.usuario), 1); // 1 hora
+    window.location.href = '../tela-restrita.html'; // ou página protegida
+  } else {
+    mostrarErro(data.erro);
+  }
+})
+
 
 if (!usuario || (usuario.tipo === 'normal' )) {
   alert('Acesso negado. Apenas colaboradores e chefes podem adicionar filmes.');
   window.location.href = '../1TelaInicial/tela1.html'; // ou outra página de login/home
 }
 
-
 let filmesAdicionados = [];
+const filmesCookie = lerCookie('filmesAdicionados');
+if (filmesCookie) {
+  try {
+    filmesAdicionados = JSON.parse(filmesCookie);
+  } catch {
+    filmesAdicionados = [];
+  }
+}
 
-    document.getElementById('formFilme').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const linkFilme = document.getElementById('linkFilme').value.trim();
-if (!linkFilme) {
-  mostrarErro('Informe o link do filme!');
-  resetarBotao();
-  return;
-} 
-  
+document.getElementById('formFilme').addEventListener('submit', function(e) {
+  e.preventDefault();
 
-      const btn = document.querySelector('.btn-adicionar');
-      btn.disabled = true;
-      btn.textContent = 'ADICIONANDO...';
+  const linkFilme = document.getElementById('linkFilme').value.trim();
+  const titulo = document.getElementById('titulo').value.trim();
+  const genero = document.getElementById('genero').value.trim();
+  const duracao = document.getElementById('duracao').value.trim();
+  const ano = parseInt(document.getElementById('ano').value);
+  const categoria = document.getElementById('categoria').value;
+  const capaFile = document.getElementById('capa').files[0];
 
-      const titulo = document.getElementById('titulo').value.trim();
-      const genero = document.getElementById('genero').value.trim();
-      const duracao = document.getElementById('duracao').value.trim();
-      const ano = parseInt(document.getElementById('ano').value);
-      const categoria = document.getElementById('categoria').value;
-      const capaFile = document.getElementById('capa').files[0];
+  if (!linkFilme) {
+    mostrarErro('Informe o link do filme!');
+    resetarBotao();
+    return;
+  }
 
-      // Validações
-      if (!titulo || !genero || !duracao || !ano || !categoria || !capaFile) {
-        mostrarErro('Todos os campos são obrigatórios, incluindo a capa!');
-        resetarBotao();
-        return;
-      }
+  if (!titulo || !genero || !duracao || !ano || !categoria || !capaFile) {
+    mostrarErro('Todos os campos são obrigatórios, incluindo a capa!');
+    resetarBotao();
+    return;
+  }
 
-      if (ano < 1900 || ano > 2030) {
-        mostrarErro('Ano deve estar entre 1900 e 2030!');
-        resetarBotao();
-        return;
-      }
+  if (ano < 1900 || ano > 2030) {
+    mostrarErro('Ano deve estar entre 1900 e 2030!');
+    resetarBotao();
+    return;
+  }
 
-      // Verifica se já existe um filme com o mesmo título
-      if (filmesAdicionados.some(filme => filme.titulo.toLowerCase() === titulo.toLowerCase())) {
-        mostrarErro('Já existe um filme com este título!');
-        resetarBotao();
-        return;
-      }
+  if (filmesAdicionados.some(filme => filme.titulo.toLowerCase() === titulo.toLowerCase())) {
+    mostrarErro('Já existe um filme com este título!');
+    resetarBotao();
+    return;
+  }
 
-      // Converte a imagem para base64 para armazenar
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const filme = {
-          id: Date.now(),
-          titulo,
-          genero,
-          duracao,
-          ano,
-          categoria,
-          capa: e.target.result, // Imagem em base64
-          nomeArquivoCapa: capaFile.name,
-          dataAdicao: new Date().toISOString()
-        };
+  const btn = document.querySelector('.btn-adicionar');
+  btn.disabled = true;
+  btn.textContent = 'ADICIONANDO...';
 
-        // Simula um delay de processamento
-        setTimeout(() => {
-          filmesAdicionados.push(filme);
-          console.log('Filme adicionado:', filme);
-          console.log('Total de filmes:', filmesAdicionados.length);
-          
-          fetch('/adicionar-filme', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify(filme)
-})
-.then(res => res.json())
-.then(data => {
-  console.log('Filme salvo no servidor:', data);
-  mostrarSucesso();
-  document.getElementById('formFilme').reset();
-  limparPreview();
-  resetarBotao();
-})
-.catch(err => {
-  mostrarErro('Erro ao salvar o filme!');
-  console.error(err);
-  resetarBotao();
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const filme = {
+      id: Date.now(),
+      titulo,
+      genero,
+      duracao,
+      ano,
+      categoria,
+      link: linkFilme,
+      capa: e.target.result,
+      nomeArquivoCapa: capaFile.name,
+      dataAdicao: new Date().toISOString()
+    };
+
+    filmesAdicionados.push(filme);
+    salvarCookie('filmesAdicionados', JSON.stringify(filmesAdicionados), 24);
+
+    fetch('/adicionar-filme', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(filme)
+    })
+    .then(res => res.json())
+    .then(data => {
+      mostrarSucesso();
+      document.getElementById('formFilme').reset();
+      limparPreview();
+      resetarBotao();
+    })
+    .catch(err => {
+      mostrarErro('Erro ao salvar o filme!');
+      console.error(err);
+      resetarBotao();
+    });
+  };
+
+  reader.readAsDataURL(capaFile);
 });
 
-        }, 1000);
-      };
-     
-      reader.readAsDataURL(capaFile);
-    });
+
 
     function mostrarSucesso() {
       const successMsg = document.getElementById('successMessage');
@@ -220,7 +253,8 @@ if (!extensoesPermitidas.includes(file.type)) {
     });
 
     // Formatação automática da duração
-   document.getElementById('duracao').addEventListener('input', function() {
+
+    document.getElementById('duracao').addEventListener('input', function() {
   let valor = this.value.replace(/[^\d]/g, '');
 
   if (valor.length === 0) {
