@@ -1,15 +1,30 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
-const db = require('./db'); // importa o banco de dados
+const db = require('./db');
+const cors = require('cors');
+const multer = require('multer');
+
+// multer config
+const uploadPath = path.join(__dirname, 'img');
+if (!fs.existsSync(uploadPath)) fs.mkdirSync(uploadPath, { recursive: true });
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, uploadPath),
+  filename: (req, file, cb) => {
+    const nomeFinal = Date.now() + '-' + file.originalname;
+    cb(null, nomeFinal);
+  }
+});
+const upload = multer({ storage });
 
 const app = express();
 const PORT = 3000;
-const cors = require('cors');
 
-app.use(cors()); // ← ATIVA o CORS aqui!
-app.use(express.static('public'));
+app.use(cors());
+app.use('/img', express.static(path.join(__dirname, 'img')));
 app.use(express.json({ limit: '10mb' }));
+
 
 // Caminho do arquivo CSV
 const CSV_PATH = path.join(__dirname, 'InfoFilmes.csv');
@@ -46,8 +61,6 @@ app.post('/login', (req, res) => {
   });
 });
 
-
-
 // ✅ ROTA: Cadastrar usuário comum
 app.post('/cadastrar', (req, res) => {
 const { nome, email, senha } = req.body;
@@ -67,7 +80,6 @@ db.run(sql, [nome, email, senha, tipo], function (err) {
       return res.status(500).json({ erro: 'Erro ao cadastrar usuário.' });
     }
 
-
     // Após cadastro, atualiza o CSV com todos os usuários
 db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
   if (err) {
@@ -82,7 +94,6 @@ db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
 
   const caminhoCSV = path.join(__dirname, 'usuarios.csv');
 
-
   try {
     fs.writeFileSync(caminhoCSV, csvHeader + csvData, 'utf8');
     res.json({ sucesso: true, id: this.lastID });
@@ -94,7 +105,6 @@ db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
 
   });
 });
-
 
 // ✅ ROTA: Cadastrar colaborador (só por você)
 app.post('/cadastrar-colaborador', (req, res) => {
@@ -128,7 +138,6 @@ app.post('/cadastrar-colaborador', (req, res) => {
 
       const caminhoCSV = path.join(__dirname, 'usuarios.csv');
 
-
       try {
         fs.writeFileSync(caminhoCSV, csvHeader + csvData, 'utf8');
         res.json({ sucesso: true, id: this.lastID });
@@ -139,7 +148,6 @@ app.post('/cadastrar-colaborador', (req, res) => {
     });
   });
 });
-
 
 // ✅ ROTA: Listar todos os usuários cadastrados
 app.get('/usuarios', (req, res) => {
@@ -153,6 +161,7 @@ app.get('/usuarios', (req, res) => {
     res.json(rows);
   });
 });
+
 // ✅ ROTA: Editar um usuário (nome, email, tipo, senha)
 app.put('/editar-colaborador/:id', (req, res) => {
   const id = req.params.id;
@@ -196,24 +205,24 @@ app.put('/editar-colaborador/:id', (req, res) => {
       return res.status(404).json({ erro: 'Usuário não encontrado.' });
     }
 
+    // Atualiza o CSV após edição
+    db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
+      if (err) {
+        console.error("Erro ao ler usuários para o CSV:", err);
+        return;
+      }
+
+      const csvHeader = 'id,nome,email,senha,tipo\n';
+      const csvData = rows.map(u =>
+        `${u.id},"${u.nome}",${u.email},${u.senha},${u.tipo}`
+      ).join('\n');
+
+      const caminhoCSV = path.join(__dirname, 'usuarios.csv');
+      fs.writeFileSync(caminhoCSV, csvHeader + csvData, 'utf8');
+    });
+
     res.json({ sucesso: true, mensagem: 'Usuário atualizado com sucesso.' });
   });
-  // Atualiza o CSV após edição ou exclusão
-db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
-  if (err) {
-    console.error("Erro ao ler usuários para o CSV:", err);
-    return;
-  }
-
-  const csvHeader = 'id,nome,email,senha,tipo\n';
-  const csvData = rows.map(u =>
-    `${u.id},"${u.nome}",${u.email},${u.senha},${u.tipo}`
-  ).join('\n');
-
-  const caminhoCSV = path.join(__dirname, 'usuarios.csv');
-  fs.writeFileSync(caminhoCSV, csvHeader + csvData, 'utf8');
-});
-
 });
 
 // ✅ ROTA: Excluir usuário
@@ -231,25 +240,27 @@ app.delete('/excluir-colaborador/:id', (req, res) => {
       return res.status(404).json({ erro: 'Usuário não encontrado.' });
     }
 
+    // Atualiza o CSV após exclusão
+    db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
+      if (err) {
+        console.error("Erro ao ler usuários para o CSV:", err);
+        return;
+      }
+
+      const csvHeader = 'id,nome,email,senha,tipo\n';
+      const csvData = rows.map(u =>
+        `${u.id},"${u.nome}",${u.email},${u.senha},${u.tipo}`
+      ).join('\n');
+
+      const caminhoCSV = path.join(__dirname, 'usuarios.csv');
+      fs.writeFileSync(caminhoCSV, csvHeader + csvData, 'utf8');
+    });
+
     res.json({ sucesso: true, mensagem: 'Usuário excluído com sucesso.' });
   });
-  // Atualiza o CSV após edição ou exclusão
-db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
-  if (err) {
-    console.error("Erro ao ler usuários para o CSV:", err);
-    return;
-  }
-
-  const csvHeader = 'id,nome,email,senha,tipo\n';
-  const csvData = rows.map(u =>
-    `${u.id},"${u.nome}",${u.email},${u.senha},${u.tipo}`
-  ).join('\n');
-
-  const caminhoCSV = path.join(__dirname, 'usuarios.csv');
-  fs.writeFileSync(caminhoCSV, csvHeader + csvData, 'utf8');
 });
 
-});
+// ✅ FUNÇÃO: Atualizar CSV de filmes
 function atualizarCSVFilmes() {
   db.all("SELECT titulo, ano, genero, duracao, capa, linkFilme, categoria FROM filmes", [], (err, rows) => {
     if (err) {
@@ -260,7 +271,7 @@ function atualizarCSVFilmes() {
     const csvHeader = 'titulo,ano,genero,duracao,img,link,categoria\n';
 
     const csvData = rows.map(filme => {
-      // Função simples para escapar aspas duplas no valor e envolver entre aspas
+      // Função para escapar aspas duplas e envolver em aspas
       function escapaCSV(valor) {
         if (!valor) return '""';
         return `"${valor.replace(/"/g, '""')}"`;
@@ -286,25 +297,7 @@ function atualizarCSVFilmes() {
   });
 }
 
-// ✅ Inicia o servidor
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
-});
-
-
-// Teste para verificar se a tabela de usuários está acessível
-db.all('SELECT * FROM usuarios', [], (err, rows) => {
-  if (err) {
-    console.error('Erro ao acessar a tabela de usuários:', err.message);
-  } else {
-    console.log('Usuários cadastrados no banco:');
-    console.log(rows);
-  }
-});
-
-
-// Depois da configuração do banco de dados e do app Express...
-
+// ✅ Criação da tabela filmes
 db.run(`
   CREATE TABLE IF NOT EXISTS filmes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -323,20 +316,50 @@ db.run(`
   else console.log('Tabela filmes criada ou já existente');
 });
 
-app.post('/adicionar-filme', (req, res) => {
+
+// ✅ ROTA: Listar todos os filmes (para a tela inicial)
+app.get('/filmes', (req, res) => {
+  const sql = `SELECT id, titulo, ano, genero, duracao, capa, linkFilme, categoria, dataAdicao FROM filmes ORDER BY dataAdicao DESC`;
+
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar filmes:', err);
+      return res.status(500).json({ erro: 'Erro ao buscar filmes.' });
+    }
+
+    res.json(rows);
+  });
+});
+
+// ✅ ROTA: Adicionar filme - CORRIGIDA COM LOGS
+app.post('/adicionar-filme', upload.single('capa'), (req, res) => {
+  console.log('Recebendo requisição para adicionar filme...');
+  console.log('Body:', req.body);
+  console.log('File:', req.file);
+
   const {
     titulo,
     genero,
     duracao,
     ano,
     categoria,
-    capa,
-    nomeArquivoCapa,
-    linkFilme,
+    link,
     dataAdicao
   } = req.body;
 
-  if (!titulo || !genero || !duracao || !ano || !categoria || !capa || !nomeArquivoCapa) {
+  if (!req.file) {
+    console.log('Erro: Nenhum arquivo enviado');
+    return res.status(400).json({ error: 'Nenhum arquivo de capa enviado' });
+  }
+
+  const nomeArquivoCapa = req.file.filename;
+  const caminhoCapa = `/img/${nomeArquivoCapa}`;
+
+  console.log('Nome do arquivo:', nomeArquivoCapa);
+  console.log('Caminho da capa:', caminhoCapa);
+
+  if (!titulo || !genero || !duracao || !ano || !categoria || !nomeArquivoCapa) {
+    console.log('Erro: Dados incompletos');
     return res.status(400).json({ error: 'Dados incompletos' });
   }
 
@@ -345,20 +368,59 @@ app.post('/adicionar-filme', (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-db.run(sql, [titulo, genero, duracao, ano, categoria, capa, nomeArquivoCapa, linkFilme, dataAdicao], function(err) {
-  if (err) {
-    console.error('Erro ao inserir filme:', err);
-    if (err.message.includes('UNIQUE constraint failed')) {
-      return res.status(409).json({ error: 'Filme com este título já existe' });
-    }
-    return res.status(500).json({ error: 'Erro no servidor' });
-  }
+  db.run(sql, [titulo, genero, duracao, ano, categoria, caminhoCapa, nomeArquivoCapa, link, dataAdicao],
+    function(err) {
+      if (err) {
+        console.error('Erro ao inserir filme:', err);
+        if (err.message.includes('UNIQUE constraint failed')) {
+          return res.status(409).json({ error: 'Filme com este título já existe' });
+        }
+        return res.status(500).json({ error: 'Erro no servidor' });
+      }
 
-  // ✅ Sucesso: agora atualiza o CSV e responde
-  atualizarCSVFilmes();
-  res.json({ message: 'Filme adicionado com sucesso', id: this.lastID });
+      console.log('Filme inserido com sucesso! ID:', this.lastID);
+      
+      // ✅ Atualiza o CSV após inserir o filme
+      setTimeout(() => {
+        atualizarCSVFilmes();
+      }, 100); // Pequeno delay para garantir que a transação foi commitada
+      
+      res.json({ 
+        message: 'Filme adicionado com sucesso', 
+        id: this.lastID,
+        filme: {
+          id: this.lastID,
+          titulo,
+          genero,
+          duracao,
+          ano,
+          categoria,
+          capa: caminhoCapa,
+          linkFilme: link
+        }
+      });
+    });
 });
 
+// ✅ ROTA: Forçar atualização do CSV (para debug)
+app.post('/atualizar-csv', (req, res) => {
+  console.log('Forçando atualização do CSV...');
+  atualizarCSVFilmes();
+  res.json({ message: 'CSV atualizado' });
+});
+
+// ✅ ROTA: Verificar conteúdo do banco
+app.get('/debug-filmes', (req, res) => {
+  db.all("SELECT * FROM filmes", [], (err, rows) => {
+    if (err) {
+      return res.status(500).json({ erro: 'Erro ao buscar filmes' });
+    }
+    res.json({ 
+      total: rows.length,
+      filmes: rows 
+    });
+  });
+});
 
 // ✅ ROTA: Comprar um filme
 app.post('/comprar', (req, res) => {
@@ -370,14 +432,12 @@ app.post('/comprar', (req, res) => {
 
   const precoCompra = 10.00;
 
-  // Aqui poderia salvar em um histórico no banco, se desejar
   res.json({
     sucesso: true,
     mensagem: `Compra realizada com sucesso! Valor: R$ ${precoCompra.toFixed(2)}`,
     valor: precoCompra
   });
 });
-
 
 // ✅ ROTA: Alugar um filme
 app.post('/alugar', (req, res) => {
@@ -389,12 +449,26 @@ app.post('/alugar', (req, res) => {
 
   const precoAluguel = 4.00;
 
-  // Aqui também poderia salvar em um histórico no banco
   res.json({
     sucesso: true,
     mensagem: `Aluguel realizado com sucesso! Valor: R$ ${precoAluguel.toFixed(2)}`,
     valor: precoAluguel
   });
- });
 });
 
+// ✅ Inicia o servidor
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+  atualizarCSVFilmes();
+
+});
+
+// Teste para verificar se a tabela de usuários está acessível
+db.all('SELECT * FROM usuarios', [], (err, rows) => {
+  if (err) {
+    console.error('Erro ao acessar a tabela de usuários:', err.message);
+  } else {
+    console.log('Usuários cadastrados no banco:');
+    console.log(rows);
+  }
+});

@@ -17,7 +17,10 @@ const img = params.get("img");
 document.getElementById("titulo-filme").textContent = `${titulo} (${ano})`;
 document.getElementById("genero-filme").textContent = genero;
 document.getElementById("duracao-filme").textContent = duracao;
-document.getElementById("imagem-filme").src = `../img/${img}`;
+document.getElementById("imagem-filme").src = img.startsWith('/img/')
+  ? img
+  : `../img/${img}`;
+
 
 // --- 2. LÓGICA DE SELEÇÃO E ADIÇÃO AO CARRINHO ---
 const botoesOpcao = document.querySelectorAll('.botao-opcao');

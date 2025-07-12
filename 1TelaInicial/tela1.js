@@ -53,10 +53,13 @@ function carregarCSV(url) {
 }
 
 function criarCard(filme) {
-  const link = `../2TelaInfoFilme/tela2.html?titulo=${encodeURIComponent(filme.titulo)}
-  &ano=${filme.ano}&genero=${encodeURIComponent(filme.genero)}
-  &duracao=${encodeURIComponent(filme.duracao)}
-  &img=${filme.img}&link=${encodeURIComponent(filme.link)}`;
+  const link = '../2TelaInfoFilme/tela2.html?' +
+  `titulo=${encodeURIComponent(filme.titulo)}` +
+  `&ano=${filme.ano}` +
+  `&genero=${encodeURIComponent(filme.genero)}` +
+  `&duracao=${encodeURIComponent(filme.duracao)}` +
+  `&img=${encodeURIComponent(filme.img)}` +
+  `&link=${encodeURIComponent(filme.link)}`;
 
   const card = document.createElement('div');
   card.className = 'film-card';
@@ -65,7 +68,10 @@ function criarCard(filme) {
   a.href = link;
 
   const img = document.createElement('img');
-  img.src = `../img/${filme.img}`;
+img.src = (filme.img && filme.img.startsWith('/img/')) 
+  ? filme.img 
+  : `/img/${filme.img || '../img/imgsAdicionais/padraoCapa.jpg'}`; // ← você pode trocar 'padrao.jpg' por outra imagem padrão
+
   img.alt = filme.titulo;
 
   a.appendChild(img);
@@ -208,7 +214,7 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
       carrinho.forEach((item, index) => {
         const itemHTML = `
           <div class="item-carrinho">
-            <img src="../img/${item.img}" alt="${item.titulo}">
+            <img src="${item.img}" alt="${item.titulo}">
             <div class="item-carrinho-info">
               <h4>${item.titulo}</h4>
               <p>${item.tipo}</p>
@@ -289,12 +295,29 @@ function adicionarAoCarrinho(filme) {
   const novoItem = {
     titulo: filme.titulo,
     img: filme.img,
-    link: filme.link, // ✅ ESSENCIAL!
-    tipo: "Compra", // ou "Aluguel" se quiser customizar
-    valor: 10 // ou 4 se for aluguel
+    link: filme.link || filme.linkFilme || "", // 🔧 Corrige a captura do link
+    tipo: "Compra", // ou "Aluguel"
+    valor: 10
   };
+
+  carrinho.push(novoItem);
+  document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(carrinho))}; path=/; max-age=3600`;
 }
 
 
+
 // Carrega o CSV e exibe os filmes
-carregarCSV('../InfoFilmes.csv').then(exibirFilmes);
+const csvTimestamp = Date.now(); // força nova versão
+carregarCSV(`../InfoFilmes.csv?t=${csvTimestamp}`).then(exibirFilmes);
+
+// Também exibe os filmes adicionados via cookie
+const filmesCookieStr = lerCookie('filmesAdicionados');
+if (filmesCookieStr) {
+  try {
+    const filmesDoCookie = JSON.parse(filmesCookieStr);
+    exibirFilmes(filmesDoCookie);
+  } catch (err) {
+    console.error('Erro ao ler filmes do cookie:', err);
+  }
+}
+

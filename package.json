@@ -20,7 +20,9 @@
   "homepage": "https://github.com/soares7maria-julia/Maria-Julia-DW#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "csv-parse": "^5.6.0",
     "express": "^5.1.0",
+    "multer": "^2.0.1",
     "sqlite3": "^5.1.7"
   }
 }
