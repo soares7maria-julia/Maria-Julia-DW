@@ -53,13 +53,15 @@ function carregarCSV(url) {
 }
 
 function criarCard(filme) {
+  if (!filme.titulo || !filme.img) return null; // evita filmes incompletos
+
   const link = '../2TelaInfoFilme/tela2.html?' +
-  `titulo=${encodeURIComponent(filme.titulo)}` +
-  `&ano=${filme.ano}` +
-  `&genero=${encodeURIComponent(filme.genero)}` +
-  `&duracao=${encodeURIComponent(filme.duracao)}` +
-  `&img=${encodeURIComponent(filme.img)}` +
-  `&link=${encodeURIComponent(filme.link)}`;
+    `titulo=${encodeURIComponent(filme.titulo)}` +
+    `&ano=${filme.ano}` +
+    `&genero=${encodeURIComponent(filme.genero)}` +
+    `&duracao=${encodeURIComponent(filme.duracao)}` +
+    `&img=${encodeURIComponent(filme.img)}` +
+    `&link=${encodeURIComponent(filme.link)}`;
 
   const card = document.createElement('div');
   card.className = 'film-card';
@@ -68,9 +70,14 @@ function criarCard(filme) {
   a.href = link;
 
   const img = document.createElement('img');
-img.src = (filme.img && filme.img.startsWith('/img/')) 
-  ? filme.img 
-  : `/img/${filme.img || '../img/imgsAdicionais/padraoCapa.jpg'}`; // ← você pode trocar 'padrao.jpg' por outra imagem padrão
+
+  if (filme.img && filme.img.startsWith('/img/')) {
+    img.src = filme.img;
+  } else if (filme.img) {
+    img.src = `/img/${filme.img}`;
+  } else {
+    img.src = '/img/imgsAdicionais/padraoCapa.jpg';
+  }
 
   img.alt = filme.titulo;
 
@@ -85,9 +92,9 @@ img.src = (filme.img && filme.img.startsWith('/img/'))
   genero.textContent = filme.genero;
   card.appendChild(genero);
 
-
   return card;
 }
+
 
 function exibirFilmes(dados) {
   const destaqueContainer = document.getElementById('em-destaque');
@@ -287,6 +294,7 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
 
   // Atualiza contador no header ao carregar
   atualizarContadorHeader();
+
 });
 
 function adicionarAoCarrinho(filme) {
@@ -322,4 +330,3 @@ if (filmesCookieStr) {
     console.error('Erro ao ler filmes do cookie:', err);
   }
 }
-
