@@ -12,6 +12,8 @@ const ano = params.get("ano");
 const genero = params.get("genero");
 const duracao = params.get("duracao");
 const img = params.get("img");
+const link = params.get("link");
+
 
 // Preenche as informações do filme na página
 document.getElementById("titulo-filme").textContent = `${titulo} (${ano})`;
@@ -43,7 +45,8 @@ botoesOpcao.forEach(botao => {
             tipo: botao.dataset.tipo,
             valor: parseFloat(botao.dataset.valor),
             titulo: titulo,
-            img: img
+            img: img,
+            link: link 
         };
 
         // Mostra a seção para adicionar ao carrinho

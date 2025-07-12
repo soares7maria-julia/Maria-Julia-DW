@@ -45,7 +45,7 @@ function carregarCSV(url) {
         if (index === 0) return null;
         const partes = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         const [titulo, ano, genero, duracao, img, link, categoria] = 
-          partes.map(p => p.replace(/^"|"$/g, '').trim());
+        partes.map(p => p.replace(/^"|"$/g, '').trim());
         return { titulo, ano, genero, duracao, img, link, categoria };
       }).filter(item => item !== null);
       return dados;
@@ -292,18 +292,20 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
 function adicionarAoCarrinho(filme) {
   const carrinho = obterCarrinho();
 
+  // Garante que o link seja gerado corretamente mesmo se vier vazio do CSV
+  console.log("Filme adicionado:", filme)
+  const linkFinal = filme.link || `/filmes/${filme.titulo.toLowerCase().replace(/\s+/g, '-')}.html`;
   const novoItem = {
     titulo: filme.titulo,
     img: filme.img,
-    link: filme.link || filme.linkFilme || "", // 🔧 Corrige a captura do link
-    tipo: "Compra", // ou "Aluguel"
+    link: linkFinal,
+    tipo: "Compra",
     valor: 10
   };
 
   carrinho.push(novoItem);
   document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(carrinho))}; path=/; max-age=3600`;
 }
-
 
 
 // Carrega o CSV e exibe os filmes
