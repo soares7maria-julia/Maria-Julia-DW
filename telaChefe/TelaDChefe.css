@@ -1,3 +1,4 @@
+/* Estilos existentes (copie tudo do seu arquivo original) */
 body {
   font-family: Arial, sans-serif;
   background-color: #121212;
@@ -36,6 +37,7 @@ table {
 th, td {
   padding: 12px 15px;
   text-align: left;
+  vertical-align: middle; /* Alinha o conteúdo verticalmente */
 }
 
 th {
@@ -47,13 +49,21 @@ td {
   border-bottom: 1px solid #444;
 }
 
+td img.capa-tabela {
+  width: 50px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
 form {
   display: flex;
   flex-direction: column;
 }
 
 form input,
-.senha-container input {
+.senha-container input,
+form select {
   background-color: #2a2a2a;
   border: 1px solid #555;
   border-radius: 5px;
@@ -64,8 +74,20 @@ form input,
   width: 100%;
 }
 
+form label {
+    margin-bottom: 5px;
+    color: #aaa;
+}
+
+form small {
+    margin-top: -8px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #888;
+}
+
 .senha-container input[type="password"] {
-  padding-right: 40px; /* apenas adiciona espaço extra pro olho */
+  padding-right: 40px;
 }
 
 .senha-container {
@@ -75,7 +97,7 @@ form input,
 
 .icone-olho {
   position: absolute;
-  top: 7px; /* ou 11px, 12px… */
+  top: 7px;
   transform: none;
   right: 12px;
   font-size: 18px;
@@ -91,21 +113,10 @@ form input,
   color: #ffffff;
 }
 
-
-
-form select {
-  background-color: #2a2a2a;
-  border: 1px solid #555;
-  border-radius: 5px;
-  color: #f1f1f1;
-  padding: 10px;
-  margin-bottom: 10px;
-}
 form select:focus,
 form input:focus {
   outline: 2px solid #545ffa;
 }
-
 
 form button {
   background-color: #545ffa;
@@ -113,9 +124,10 @@ form button {
   padding: 10px;
   border: none;
   border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
-/* Botões da tabela */
 button.btn-editar,
 button.btn-excluir {
   padding: 6px 12px;
@@ -126,23 +138,49 @@ button.btn-excluir {
   font-weight: bold;
 }
 
-/* Botão Editar */
 button.btn-editar {
-  background-color: #4c49a6; /* verde */
+  background-color: #4c49a6;
   color: white;
 }
 
-/* Botão Excluir */
 button.btn-excluir {
-  background-color: #190f34; /* vermelho */
+  background-color: #190f34;
   color: white;
 }
 
-/* Efeito hover */
-button.btn-editar:hover {
-  background-color: #545ffa;
+button.btn-editar:hover,
+button.btn-excluir:hover,
+form button:hover {
+  background-color: #6a70ff;
 }
 
-button.btn-excluir:hover {
-  background-color: #545ffa;
+/* 🟦 NOVOS ESTILOS PARA AS ABAS 🟦 */
+.abas-container {
+  display: flex;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #333;
+}
+
+.aba-link {
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 16px;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px; /* Alinha com a borda do container */
+}
+
+.aba-link.active {
+  color: #ffffff;
+  border-bottom-color: #545ffa;
+}
+
+.aba-conteudo {
+  display: none; /* Oculta todas as abas por padrão */
+}
+
+.aba-conteudo.active {
+  display: block; /* Mostra apenas a aba ativa */
 }

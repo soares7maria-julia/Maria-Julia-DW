@@ -183,7 +183,7 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
 
   const usuario = JSON.parse(usuarioStr);
   if (usuario.tipo === "colaborador" || usuario.tipo === "chefe") {
-    window.location.href = "../6TelaAdicFilme/adicionarF.html";
+    window.location.href = "../TelaChefe/TelaDChefe.html";
   } else {
     alert("Você não tem permissão para acessar esta área.");
   }

@@ -472,3 +472,55 @@ db.all('SELECT * FROM usuarios', [], (err, rows) => {
     console.log(rows);
   }
 });
+
+app.put('/editar-filme/:id', upload.single('capa'), (req, res) => {
+  const id = req.params.id;
+  const {
+    titulo,
+    genero,
+    duracao,
+    ano,
+    categoria,
+    link,
+    dataAdicao
+  } = req.body;
+
+  const atualizacoes = [];
+  const valores = [];
+
+  if (titulo) { atualizacoes.push("titulo = ?"); valores.push(titulo); }
+  if (genero) { atualizacoes.push("genero = ?"); valores.push(genero); }
+  if (duracao) { atualizacoes.push("duracao = ?"); valores.push(duracao); }
+  if (ano) { atualizacoes.push("ano = ?"); valores.push(ano); }
+  if (categoria) { atualizacoes.push("categoria = ?"); valores.push(categoria); }
+  if (link) { atualizacoes.push("linkFilme = ?"); valores.push(link); }
+  if (dataAdicao) { atualizacoes.push("dataAdicao = ?"); valores.push(dataAdicao); }
+
+  if (req.file) {
+    const caminhoCapa = `/img/${req.file.filename}`;
+    atualizacoes.push("capa = ?", "nomeArquivoCapa = ?");
+    valores.push(caminhoCapa, req.file.filename);
+  }
+
+  if (atualizacoes.length === 0) {
+    return res.status(400).json({ erro: 'Nenhum campo enviado para atualizar.' });
+  }
+
+  valores.push(id);
+
+  const sql = `UPDATE filmes SET ${atualizacoes.join(', ')} WHERE id = ?`;
+
+  db.run(sql, valores, function (err) {
+    if (err) {
+      console.error('Erro ao editar filme:', err.message);
+      return res.status(500).json({ erro: 'Erro ao editar o filme.' });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ erro: 'Filme não encontrado.' });
+    }
+
+    atualizarCSVFilmes();
+    res.json({ sucesso: true, mensagem: 'Filme atualizado com sucesso.' });
+  });
+});
