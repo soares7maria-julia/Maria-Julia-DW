@@ -6,12 +6,8 @@ function lerCookie(nome) {
 }
 
 function obterCarrinho() {
-  const carrinhoStr = lerCookie('carrinho');
-  if (!carrinhoStr) {
-    const vazio = [];
-    document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(vazio))}; path=/; max-age=3600`;
-    return vazio;
-  }
+  const carrinhoStr = lerCookie("carrinho");
+  if (!carrinhoStr) return [];
   try {
     return JSON.parse(carrinhoStr);
   } catch {
@@ -155,12 +151,17 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
     const usuario = JSON.parse(usuarioLogadoStr);
     spanLogin.textContent = usuario.nome || "Login";
   }
+  if (usuarioLogadoStr && btnLogout) {
+  btnLogout.style.display = "inline-block"; // <-- Mostra o botão
+}
 
   if (usuarioLogadoStr && spanLogin && btnLogout) {
-    btnLogout.addEventListener("click", () => {
-      document.cookie = "usuarioLogado=; path=/; max-age=0";
-      location.reload();
-    });
+   btnLogout.addEventListener("click", () => {
+  document.cookie = "usuarioLogado=; path=/; max-age=0";
+  document.cookie = "carrinho=; path=/; max-age=0"; // limpa carrinho também
+  location.reload();
+});
+
   }
 
   // Evento que limpa o carrinho no cookie quando a página for fechada,
@@ -183,7 +184,7 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
 
   const usuario = JSON.parse(usuarioStr);
   if (usuario.tipo === "colaborador" || usuario.tipo === "chefe") {
-    window.location.href = "../TelaChefe/TelaDChefe.html";
+    window.location.href = "../6TelaGereciamento/TelaDChefe.html";
   } else {
     alert("Você não tem permissão para acessar esta área.");
   }
@@ -251,12 +252,15 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
 
   // Remove item do carrinho
   function removerItemDoCarrinho(index) {
-    let carrinho = JSON.parse(lerCookie('carrinho')) || [];
-    carrinho.splice(index, 1);
-    document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(carrinho))}; path=/; max-age=3600`;
-    popularModalCarrinho();
-    atualizarContadorHeader();
-  }
+  let carrinho = obterCarrinho();
+  carrinho.splice(index, 1);
+
+  document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(carrinho))}; path=/; max-age=3600`;
+
+  popularModalCarrinho();
+  atualizarContadorHeader();
+}
+
 
   // Eventos para abrir e fechar modal
   carrinhoIcone.addEventListener('click', abrirModal);
@@ -300,9 +304,8 @@ const btnAreaRestrita = document.getElementById("btnAreaRestrita");
 function adicionarAoCarrinho(filme) {
   const carrinho = obterCarrinho();
 
-  // Garante que o link seja gerado corretamente mesmo se vier vazio do CSV
-  console.log("Filme adicionado:", filme)
   const linkFinal = filme.link || `/filmes/${filme.titulo.toLowerCase().replace(/\s+/g, '-')}.html`;
+
   const novoItem = {
     titulo: filme.titulo,
     img: filme.img,
@@ -312,9 +315,10 @@ function adicionarAoCarrinho(filme) {
   };
 
   carrinho.push(novoItem);
+
+  // salva no cookie padrão "carrinho"
   document.cookie = `carrinho=${encodeURIComponent(JSON.stringify(carrinho))}; path=/; max-age=3600`;
 }
-
 
 // Carrega o CSV e exibe os filmes
 const csvTimestamp = Date.now(); // força nova versão
@@ -330,3 +334,5 @@ if (filmesCookieStr) {
     console.error('Erro ao ler filmes do cookie:', err);
   }
 }
+
+addEventListener

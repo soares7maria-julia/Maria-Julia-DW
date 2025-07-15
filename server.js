@@ -96,7 +96,17 @@ db.all("SELECT id, nome, email, senha, tipo FROM usuarios", [], (err, rows) => {
 
   try {
     fs.writeFileSync(caminhoCSV, csvHeader + csvData, 'utf8');
-    res.json({ sucesso: true, id: this.lastID });
+    res.json({
+  sucesso: true,
+  usuario: {
+    id: this.lastID,
+    nome,
+    email,
+    senha,
+    tipo
+  }
+});
+
   } catch (err) {
     console.error('Erro ao salvar CSV:', err);
     res.status(500).json({ erro: 'Usuário cadastrado, mas não foi possível atualizar o CSV.' });

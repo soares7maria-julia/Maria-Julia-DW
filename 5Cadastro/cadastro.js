@@ -67,8 +67,14 @@ const cadastroForm = document.getElementById('cadastroForm');
     if (data.erro) {
       alert("Erro: " + data.erro);
     } else {
-      alert("Cadastro realizado com sucesso!");
-      window.location.href = "../4TelaLogin/login.html"; // redireciona pro login
+    if (data.usuario) {
+  document.cookie = `usuarioLogado=${encodeURIComponent(JSON.stringify(data.usuario))}; path=/; max-age=3600`;
+  window.location.href = "../1TelaInicial/tela1.html";
+} else {
+  alert("Cadastro feito, mas não foi possível logar automaticamente.");
+  window.location.href = "../4TelaLogin/login.html";
+}
+
     }
   })
   .catch(err => {

@@ -51,7 +51,7 @@ function finalizarCompra() {
 
   alert("Compra finalizada com sucesso!");
 
-  // 🔽 AGORA sim: mostra os botões com os links dos filmes
+  // botões com os links dos filmes
   const carrinhoStr = lerCookie('carrinho');
   let carrinho = [];
   try {

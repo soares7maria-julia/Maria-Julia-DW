@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Painel do Chefe</title>
+  <link rel="stylesheet" href="TelaDChefe.css" />
+</head>
+<body>
+  <h1>Painel de Gerenciamento</h1>
+
+  <!-- Abas de Navegação -->
+  <div class="abas-container">
+    <button class="aba-link active" onclick="mostrarAba('usuarios')">Gerenciar Usuários</button>
+    <button class="aba-link" onclick="mostrarAba('filmes')">Gerenciar Filmes</button>
+  </div>
+
+  <!-- Seção de Usuários (inicialmente visível) -->
+  <div id="aba-usuarios" class="aba-conteudo active">
+    <section>
+      <h2>Usuarios</h2>
+      <form id="formColaborador">
+        <input type="text" id="nome" name="nome" placeholder="Nome" required />
+        <input type="email" id="email" name="email" placeholder="Email" required />
+        <div class="senha-container">
+          <input type="password" id="senha" name="senha" placeholder="Senha" required />
+          <span id="toggleSenha" class="icone-olho">👁</span>
+        </div>
+        <select id="tipo" name="tipo" required>
+          <option value="">Selecione o status</option>
+          <option value="normal">Normal</option>
+          <option value="colaborador">Colaborador</option>
+          <option value="chefe">Chefe</option>
+        </select>
+        <button type="submit" id="btnSalvarUsuario">Cadastrar</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Usuários Cadastrados</h2>
+      <table id="tabelaUsuarios">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Email</th>
+            <th>Tipo</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- Seção de Filmes (inicialmente oculta) -->
+  <div id="aba-filmes" class="aba-conteudo">
+    <section>
+      <h2>Filme</h2>
+      <form id="formFilme" enctype="multipart/form-data">
+        <input type="text" id="filme-titulo" name="titulo" placeholder="Título do Filme" required />
+        <input type="text" id="filme-genero" name="genero" placeholder="Gênero" required />
+        <div class="input-group">
+          <label for="duracao">Duração</label>
+        <input type="text" id="filme-duracao" name="duracao" placeholder="Ex: 1h 45m" 
+  pattern="^[0-4]h\s([0-5][0-9]|[0-9])m$" 
+  title="Formato esperado: 1h 30m" required />
+        <input type="number" id="filme-ano" name="ano" placeholder="Ano de Lançamento" required />
+        <select id="filme-categoria" name="categoria" required>
+      <option value="">Selecione a categoria</option>
+     <option value="EM DESTAQUE">EM DESTAQUE</option>
+    <option value="FILMES">FILMES</option>
+         </select>
+
+        <input type="text" id="filme-link" name="link" placeholder="Link do Filme" />
+        
+        <label for="filme-capa">Capa do Filme:</label>
+        <input type="file" id="filme-capa" name="capa" accept="image/*" />
+        <small>Deixe em branco se não quiser alterar a capa ao editar.</small>
+
+        <button type="submit" id="btnSalvarFilme">Cadastrar Filme</button>
+      </form>
+    </section>
+
+    <section>
+      <h2>Filmes Cadastrados</h2>
+      <table id="tabelaFilmes">
+        <thead>
+          <tr>
+            <th>Capa</th>
+            <th>Título</th>
+            <th>Ano</th>
+            <th>Gênero</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
+
+  <script src="TelaDChefe.js"></script>
+</body>
+</html>
